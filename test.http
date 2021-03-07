@@ -1,0 +1,15 @@
+### Get All Students
+
+GET http://localhost:9090/api/students
+Accept: application/json
+
+### Create New Product
+POST http://localhost:9090/api/students
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Sammi Aldhi Yanto",
+  "identifier": "2003119232" ,
+  "email": "sammidev@gmail.com"
+}
