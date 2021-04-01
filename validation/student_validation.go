@@ -20,3 +20,20 @@ func Validate(request model.CreateStudentRequest) {
 		})
 	}
 }
+
+func ValidateProduct(request model.CreateProductRequest) {
+	err := validation.ValidateStruct(&request,
+		validation.Field(&request.Id, validation.Required),
+		validation.Field(&request.Code, validation.Required),
+		validation.Field(&request.Name, validation.Required),
+		validation.Field(&request.Price, validation.Required),
+		validation.Field(&request.Avaliable, validation.Required),
+		validation.Field(&request.Stock, validation.Required),
+	)
+
+	if err != nil {
+		panic(exception.ValidationError{
+			Message: err.Error(),
+		})
+	}
+}

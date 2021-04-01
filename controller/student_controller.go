@@ -19,6 +19,24 @@ func NewStudentController(studentService *service.StudentService) StudentControl
 func (controller *StudentController) Route(app *fiber.App) {
 	app.Post("/api/students", controller.Create)
 	app.Get("/api/students", controller.List)
+	app.Delete("/api/students/:id", controller.Delete)
+}
+
+func (controller *StudentController) Delete(c *fiber.Ctx) error {
+	var id string = c.Params("id")
+	response := controller.StudentService.Delete(id)
+	if response == "DELETED" {
+		return c.JSON(model.WebResponse{
+			Code:   fiber.StatusOK,
+			Status: "DELETED",
+			Data:   nil,
+		})
+	}
+	return c.JSON(model.WebResponse{
+		Code:   fiber.StatusExpectationFailed,
+		Status: "ID NOT FOUND",
+		Data:   nil,
+	})
 }
 
 func (controller *StudentController) Create(c *fiber.Ctx) error {

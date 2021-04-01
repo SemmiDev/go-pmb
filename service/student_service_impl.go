@@ -17,6 +17,10 @@ type studentServiceImpl struct {
 	StudentRepository repository.StudentRepository
 }
 
+func (service *studentServiceImpl) Delete(id string) string {
+	return service.StudentRepository.Delete(id)
+}
+
 func (service *studentServiceImpl) Create(request model.CreateStudentRequest) (response model.CreateStudentResponse) {
 	validation.Validate(request)
 

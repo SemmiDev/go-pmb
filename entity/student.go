@@ -6,3 +6,12 @@ type Student struct {
 	Name string
 	Email string
 }
+
+type Product struct {
+	Id string
+	Code string
+	Name string
+	Price float64
+	Avaliable bool
+	Stock int
+}

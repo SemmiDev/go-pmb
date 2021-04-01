@@ -13,3 +13,7 @@ Accept: application/json
   "identifier": "2003119232" ,
   "email": "sammidev@gmail.com"
 }
+
+### Delete student by id
+DELETE http://localhost:9090/api/students/1cd2ae64-a673-4be9-8403-967cb058f337
+Accept: application/json

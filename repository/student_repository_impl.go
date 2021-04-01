@@ -18,6 +18,24 @@ type studentRepositoryImpl struct {
 	Collection *mongo.Collection
 }
 
+type countDeleted struct {
+	DeletedCount int64 `bson:"n"`
+}
+
+func (repository *studentRepositoryImpl) Delete(id string) string {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+
+	result, _ := repository.Collection.DeleteOne(ctx, bson.M{
+		"_id": id,
+	})
+
+	if result.DeletedCount == 1 {
+		return "DELETED"
+	}
+	return "ID NOT FOUND"
+}
+
 func (repository *studentRepositoryImpl) Insert(student entity.Student) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
