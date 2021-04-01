@@ -3,6 +3,10 @@
 GET http://localhost:9090/api/students
 Accept: application/json
 
+###
+GET http://localhost:9090/api/students/02cd8b60-2870-4976-ab3d-2d0b5c7339d3
+Accept: application/json
+
 ### Create New Product
 POST http://localhost:9090/api/students
 Content-Type: application/json
@@ -17,3 +21,13 @@ Accept: application/json
 ### Delete student by id
 DELETE http://localhost:9090/api/students/1cd2ae64-a673-4be9-8403-967cb058f337
 Accept: application/json
+
+### put by id
+PUT http://localhost:9090/api/students/691f200000000ee-60fd-44da-9417-8e5d60cb9578
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Sammi update",
+  "email": "sammidev update@gmail.com"
+}

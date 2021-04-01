@@ -18,6 +18,42 @@ type studentRepositoryImpl struct {
 	Collection *mongo.Collection
 }
 
+func (repository *studentRepositoryImpl) UpdateById(id string, student entity.Student) bool {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+
+	filter := bson.M{
+		"_id": id,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"name": student.Name,
+			"email": student.Email,
+		},
+	}
+
+	result,err := repository.Collection.UpdateOne(ctx, filter, update)
+	exception.PanicIfNeeded(err)
+	if result.ModifiedCount == 1 {
+		return true
+	}
+	return false
+}
+
+func (repository *studentRepositoryImpl) GetById(id string) entity.Student {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+
+	var student entity.Student
+	err := repository.Collection.FindOne(ctx, bson.M{
+		"_id": id,
+	}).Decode(&student)
+
+	exception.PanicIfNeeded(err)
+	return student
+}
+
 type countDeleted struct {
 	DeletedCount int64 `bson:"n"`
 }

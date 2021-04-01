@@ -20,3 +20,14 @@ type GetStudentResponse struct {
 	Name string 		`json:"name"`
 	Email string 		`json:"email"`
 }
+
+type GetSingleStudentResponse struct {
+	Identifier string 	`json:"identifier"`
+	Name string 		`json:"name"`
+	Email string 		`json:"email"`
+}
+
+type UpdateStudentRequest struct {
+	Name string 		`json:"name"`
+	Email string 		`json:"email"`
+}

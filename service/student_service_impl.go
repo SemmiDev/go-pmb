@@ -17,6 +17,25 @@ type studentServiceImpl struct {
 	StudentRepository repository.StudentRepository
 }
 
+func (service *studentServiceImpl) Update(id string, student model.UpdateStudentRequest) bool {
+	std := entity.Student{
+		Id:         "",
+		Identifier: "",
+		Name:       student.Name,
+		Email:      student.Email,
+	}
+	return service.StudentRepository.UpdateById(id, std)
+}
+
+func (service *studentServiceImpl) Get(id string) (response model.GetSingleStudentResponse) {
+	student := service.StudentRepository.GetById(id)
+	return model.GetSingleStudentResponse{
+		Identifier: student.Identifier,
+		Name:       student.Name,
+		Email:      student.Email,
+	}
+}
+
 func (service *studentServiceImpl) Delete(id string) string {
 	return service.StudentRepository.Delete(id)
 }

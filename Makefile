@@ -1,2 +1,2 @@
 run:
-	./go-clean
+	go run main.go

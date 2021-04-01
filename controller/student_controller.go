@@ -20,6 +20,41 @@ func (controller *StudentController) Route(app *fiber.App) {
 	app.Post("/api/students", controller.Create)
 	app.Get("/api/students", controller.List)
 	app.Delete("/api/students/:id", controller.Delete)
+	app.Get("/api/students/:id", controller.GetById)
+	app.Put("/api/students/:id", controller.UpdateById)
+}
+
+func (controller *StudentController) UpdateById(c *fiber.Ctx) error {
+	var id string = c.Params("id")
+	var request model.UpdateStudentRequest
+	err := c.BodyParser(&request)
+	exception.PanicIfNeeded(err)
+
+	response := controller.StudentService.Update(id, request)
+	if response == true {
+		return c.JSON(model.WebResponse{
+			Code:   fiber.StatusOK,
+			Status: "UPDATED",
+			Data:   response,
+		})
+	}
+
+	return c.JSON(model.WebResponse{
+		Code:   fiber.StatusOK,
+		Status: "FAILED TO UPDATED",
+		Data:   nil,
+	})
+}
+
+func (controller *StudentController) GetById(c *fiber.Ctx) error {
+	var id string = c.Params("id")
+	response := controller.StudentService.Get(id)
+
+	return c.JSON(model.WebResponse{
+		Code:   fiber.StatusOK,
+		Status: "ID " + id + " found",
+		Data:   response,
+	})
 }
 
 func (controller *StudentController) Delete(c *fiber.Ctx) error {

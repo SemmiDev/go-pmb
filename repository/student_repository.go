@@ -7,4 +7,6 @@ type StudentRepository interface {
 	Delete(id string) string
 	FindAll() (students []entity.Student)
 	DeleteAll()
+	GetById(id string) entity.Student
+	UpdateById(id string, student entity.Student) bool
 }
