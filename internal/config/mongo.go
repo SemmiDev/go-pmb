@@ -2,7 +2,7 @@ package config
 
 import (
 	"context"
-	"go-clean/exception"
+	exception2 "go-clean/internal/exception"
 	"go.mongodb.org/mongo-driver/mongo"
 	options2 "go.mongodb.org/mongo-driver/mongo/options"
 	"strconv"
@@ -14,13 +14,13 @@ func NewMongoDatabase(configuration Config) *mongo.Database {
 	defer cancel()
 
 	mongoPoolMin, err := strconv.Atoi(configuration.Get("MONGO_POOL_MIN"))
-	exception.PanicIfNeeded(err)
+	exception2.PanicIfNeeded(err)
 
 	mongoPoolMax, err := strconv.Atoi(configuration.Get("MONGO_POOL_MAX"))
-	exception.PanicIfNeeded(err)
+	exception2.PanicIfNeeded(err)
 
 	mongoMaxIdleTime, err := strconv.Atoi(configuration.Get("MONGO_MAX_IDLE_TIME_SECOND"))
-	exception.PanicIfNeeded(err)
+	exception2.PanicIfNeeded(err)
 
 	option := options2.Client().
 		SetMinPoolSize(uint64(mongoPoolMin)).
@@ -28,10 +28,10 @@ func NewMongoDatabase(configuration Config) *mongo.Database {
 		SetMaxConnIdleTime(time.Duration(mongoMaxIdleTime) * time.Second)
 
 	client, err := mongo.NewClient(option)
-	exception.PanicIfNeeded(err)
+	exception2.PanicIfNeeded(err)
 
 	err = client.Connect(ctx)
-	exception.PanicIfNeeded(err)
+	exception2.PanicIfNeeded(err)
 
 	database := client.Database(configuration.Get("MONGO_DATABASE"))
 	return database

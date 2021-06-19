@@ -1,33 +1,25 @@
 ### Get All Students
-
-GET http://localhost:9090/api/students
+GET http://localhost:9090/api/v1/students
 Accept: application/json
 
-###
-GET http://localhost:9090/api/students/02cd8b60-2870-4976-ab3d-2d0b5c7339d3
+### Get Student by ID
+GET http://localhost:9090/api/v1/students/d0bfa4e1-2bcb-49f9-af92-5845d35bf0aa
 Accept: application/json
 
-### Create New Product
-POST http://localhost:9090/api/students
+### Get Student by _id
+GET http://localhost:9090/api/v1/students/60cd38d01f83650d635ca925
+Accept: application/json
+
+### Create New Student
+POST http://localhost:9090/api/v1/students
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Sammi Aldhi Yanto",
-  "identifier": "2003119232" ,
-  "email": "sammidev@gmail.com"
-}
-
-### Delete student by id
-DELETE http://localhost:9090/api/students/1cd2ae64-a673-4be9-8403-967cb058f337
-Accept: application/json
-
-### put by id
-PUT http://localhost:9090/api/students/691f200000000ee-60fd-44da-9417-8e5d60cb9578
-Content-Type: application/json
-Accept: application/json
-
-{
-  "name": "Sammi update",
-  "email": "sammidev update@gmail.com"
+  "full_name": "Rahmatul Izzah Annisa",
+  "email": "izzah@gmail.com" ,
+  "phone_number": "082387325922",
+  "path": 1,
+  "year": 2021,
+  "registration_number": "1a231231231dq11321"
 }

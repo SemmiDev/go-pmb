@@ -3,25 +3,25 @@ package controller
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"go-clean/entity"
-	"go-clean/model"
+	"go-clean/internal/app/model"
 	"io/ioutil"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestStudentController_Create(t *testing.T) {
-	studentRepository.DeleteAll()
 	createStudentRequest := model.CreateStudentRequest{
-		Name:     "Sammi Aldhi Yanto",
-		Identifier: "2003113948",
-		Email: "sammidev@gmail.com",
+		FullName:           "sammi aldhi yanto",
+		Email:              "sammidev@gmail.com",
+		PhoneNumber:        "0123821030123",
+		Path:               2,
+		Year:               2018,
+		RegistrationNumber: "2342314121",
 	}
 	requestBody, _ := json.Marshal(createStudentRequest)
 
-	request := httptest.NewRequest("POST", "/api/students", bytes.NewBuffer(requestBody))
+	request := httptest.NewRequest("POST", "/api/v1/students", bytes.NewBuffer(requestBody))
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
 
@@ -38,23 +38,13 @@ func TestStudentController_Create(t *testing.T) {
 	jsonData, _ := json.Marshal(webResponse.Data)
 	createStudentResponse := model.CreateStudentResponse{}
 	json.Unmarshal(jsonData, &createStudentResponse)
-	assert.NotNil(t, createStudentResponse.Id)
-	assert.Equal(t, createStudentRequest.Name, createStudentResponse.Name)
-	assert.Equal(t, createStudentRequest.Identifier, createStudentResponse.Identifier)
-	assert.Equal(t, createStudentRequest.Email, createStudentResponse.Email)
+
+	assert.NotNil(t, createStudentResponse.Identifier)
+	assert.NotNil(t, createStudentResponse.Password)
 }
 
 func TestStudentController_List(t *testing.T) {
-	studentRepository.DeleteAll()
-	product := entity.Student{
-		Id:       uuid.New().String(),
-		Name:     "sammidev",
-		Identifier: "200311xxx",
-		Email: "sammidev@mail.com",
-	}
-	studentRepository.Insert(product)
-
-	request := httptest.NewRequest("GET", "/api/students", nil)
+	request := httptest.NewRequest("GET", "/api/v1/students", nil)
 	request.Header.Set("Accept", "application/json")
 
 	response, _ := app.Test(request)
@@ -68,17 +58,6 @@ func TestStudentController_List(t *testing.T) {
 	assert.Equal(t, "OK", webResponse.Status)
 
 	list := webResponse.Data.([]interface{})
-	containsStudent := false
-
-	for _, data := range list {
-		jsonData, _ := json.Marshal(data)
-		getStudentResponse := model.GetStudentResponse{}
-		json.Unmarshal(jsonData, &getStudentResponse)
-		if getStudentResponse.Id == product.Id {
-			containsStudent = true
-		}
-	}
-
-	assert.True(t, containsStudent)
+	assert.NotNil(t, list)
 }
 

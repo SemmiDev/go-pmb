@@ -3,11 +3,11 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"go-clean/config"
-	"go-clean/controller"
-	"go-clean/exception"
-	"go-clean/repository"
-	"go-clean/service"
+	"go-clean/internal/app/controller"
+	"go-clean/internal/app/repository"
+	"go-clean/internal/app/service"
+	"go-clean/internal/config"
+	"go-clean/internal/exception"
 )
 
 func main() {
@@ -16,7 +16,8 @@ func main() {
 	database := config.NewMongoDatabase(configuration)
 
 	// setup repository
-	studentRepository := repository.NewStudentRepository(database)
+	counterRepo := repository.NewCounterRepo(database)
+	studentRepository := repository.NewStudentRepository(database, counterRepo)
 	// setup service
 	studentService := service.NewStudentService(&studentRepository)
 	// Setup Controller

@@ -2,7 +2,7 @@ package exception
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-clean/model"
+	"go-clean/internal/app/model"
 )
 
 func ErrorHandler(ctx *fiber.Ctx, err error) error {

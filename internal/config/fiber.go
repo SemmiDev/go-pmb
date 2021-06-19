@@ -2,11 +2,11 @@ package config
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-clean/exception"
+	exception2 "go-clean/internal/exception"
 )
 
 func NewFiberConfig() fiber.Config {
 	return fiber.Config{
-		ErrorHandler: exception.ErrorHandler,
+		ErrorHandler: exception2.ErrorHandler,
 	}
 }
