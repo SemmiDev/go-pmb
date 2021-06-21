@@ -6,10 +6,6 @@ Accept: application/json
 GET http://localhost:9090/api/v1/students/d0bfa4e1-2bcb-49f9-af92-5845d35bf0aa
 Accept: application/json
 
-### Get Student by _id
-GET http://localhost:9090/api/v1/students/60cd38d01f83650d635ca925
-Accept: application/json
-
 ### Create New Student
 POST http://localhost:9090/api/v1/students
 Content-Type: application/json
@@ -18,8 +14,8 @@ Accept: application/json
 {
   "full_name": "Rahmatul Izzah Annisa",
   "email": "izzah@gmail.com" ,
-  "phone_number": "082387325922",
-  "path": 1,
+  "phone_number": "082387325971",
+  "path": 2,
   "year": 2021,
-  "registration_number": "1a231231231dq11321"
+  "registration_number": "1234567890"
 }
