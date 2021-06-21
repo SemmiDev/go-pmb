@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/recover"
 	"go-clean/internal/app/controller"
 	"go-clean/internal/app/repository"
 	"go-clean/internal/app/service"
 	"go-clean/internal/config"
 	"go-clean/internal/exception"
+	"go-clean/internal/middleware"
 	"os"
 )
 
@@ -20,11 +20,12 @@ func main() {
 	studentRepository := repository.NewStudentRepository(database)
 	// setup service
 	studentService := service.NewStudentService(&studentRepository)
-	// Setup Controller
+	// Setup controller
 	studentController := controller.NewStudentController(&studentService)
-	// Setup Fiber
+	// Setup fiber
 	app := fiber.New(config.NewFiberConfig())
-	app.Use(recover.New())
+	// Setup middleware
+	middleware.FiberMiddleware(app)
 	// Setup Routing
 	studentController.Route(app)
 
