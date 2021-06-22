@@ -6,9 +6,10 @@ import (
 	"go-clean/internal/app/repository"
 	"go-clean/internal/app/service"
 	"go-clean/internal/config"
-	"go-clean/internal/exception"
 	"go-clean/internal/middleware"
+	"log"
 	"os"
+	"os/signal"
 )
 
 func main() {
@@ -29,7 +30,32 @@ func main() {
 	// Setup Routing
 	studentController.Route(app)
 
-	// Start App
-	err := app.Listen(os.Getenv("APP_PORT"))
-	exception.PanicIfNeeded(err)
+	// Start server
+	StartServer(app)
+}
+
+func StartServer(app *fiber.App) {
+	// Create channel for idle connections.
+	idleConsClosed := make(chan struct{})
+
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt) // Catch OS signals.
+		<-sigint
+
+		// Received an interrupt signal, shutdown.
+		if err := app.Shutdown(); err != nil {
+			// Error from closing listeners, or context timeout:
+			log.Printf("Oops... Server is not shutting down! Reason: %v", err)
+		}
+
+		close(idleConsClosed)
+	}()
+
+	// Run server.
+	if err := app.Listen(os.Getenv("SERVER_URL")); err != nil {
+		log.Printf("Oops... Server is not running! Reason: %v", err)
+	}
+
+	<-idleConsClosed
 }
