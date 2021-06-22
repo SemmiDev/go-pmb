@@ -34,7 +34,7 @@ func Logout(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(model.WebResponse{
 			Code:   fiber.StatusUnauthorized,
-			Status: c.Status(fiber.StatusUnauthorized).String(),
+			Status: "unauthorized",
 			Data:   nil,
 		})
 	}
@@ -43,15 +43,15 @@ func Logout(c *fiber.Ctx) error {
 	if delErr != nil {
 		return c.JSON(model.WebResponse{
 			Code:   fiber.StatusUnauthorized,
-			Status: c.Status(fiber.StatusUnauthorized).String(),
-			Data:   delErr,
+			Status: delErr.Error(),
+			Data:   nil,
 		})
 	}
 
 	return c.JSON(model.WebResponse{
 		Code:   fiber.StatusOK,
-		Status: c.Status(fiber.StatusOK).String(),
-		Data:   "successfully logged out",
+		Status: "successfully logged out",
+		Data:   nil,
 	})
 }
 
@@ -60,8 +60,8 @@ func Refresh(c *fiber.Ctx) error {
 	if err := c.BodyParser(&mapToken); err != nil {
 		return c.JSON(model.WebResponse{
 			Code:   fiber.StatusUnprocessableEntity,
-			Status: c.Status(fiber.StatusUnprocessableEntity).String(),
-			Data:   err.Error(),
+			Status: err.Error(),
+			Data:   nil,
 		})
 	}
 	refreshToken := mapToken["refresh_token"]
@@ -80,8 +80,8 @@ func Refresh(c *fiber.Ctx) error {
 		fmt.Println("the error: ", err)
 		return c.JSON(model.WebResponse{
 			Code:   fiber.StatusUnauthorized,
-			Status: c.Status(fiber.StatusUnauthorized).String(),
-			Data:   "refresh token expired",
+			Status: "refresh token expired",
+			Data:   nil,
 		})
 	}
 
@@ -89,8 +89,8 @@ func Refresh(c *fiber.Ctx) error {
 	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
 		return c.JSON(model.WebResponse{
 			Code:   fiber.StatusUnauthorized,
-			Status: c.Status(fiber.StatusUnauthorized).String(),
-			Data:   "error occurred",
+			Status: "error occurred",
+			Data:  nil,
 		})
 	}
 
@@ -101,8 +101,8 @@ func Refresh(c *fiber.Ctx) error {
 		if !ok {
 			return c.JSON(model.WebResponse{
 				Code:   fiber.StatusUnprocessableEntity,
-				Status: c.Status(fiber.StatusUnprocessableEntity).String(),
-				Data:   "error occurred",
+				Status: "error occurred",
+				Data:   nil,
 			})
 		}
 		userId := claims["user_id"].(string)
@@ -112,8 +112,8 @@ func Refresh(c *fiber.Ctx) error {
 			//Delete the previous Refresh Token
 			return c.JSON(model.WebResponse{
 				Code:   fiber.StatusUnauthorized,
-				Status: c.Status(fiber.StatusUnauthorized).String(),
-				Data:   "unauthorized",
+				Status: "unauthorized",
+				Data: nil,
 			})
 		}
 
@@ -122,8 +122,8 @@ func Refresh(c *fiber.Ctx) error {
 		if createErr != nil {
 			return c.JSON(model.WebResponse{
 				Code:   fiber.StatusUnauthorized,
-				Status: c.Status(fiber.StatusUnauthorized).String(),
-				Data:   createErr,
+				Status: createErr.Error(),
+				Data:   nil,
 			})
 		}
 
@@ -132,8 +132,8 @@ func Refresh(c *fiber.Ctx) error {
 			//save the tokens metadata to redis
 			return c.JSON(model.WebResponse{
 				Code:   fiber.StatusForbidden,
-				Status: c.Status(fiber.StatusForbidden).String(),
-				Data:   saveErr,
+				Status: saveErr.Error(),
+				Data:   nil,
 			})
 		}
 
@@ -151,8 +151,8 @@ func Refresh(c *fiber.Ctx) error {
 	} else {
 		return c.JSON(model.WebResponse{
 			Code:   fiber.StatusUnauthorized,
-			Status: c.Status(fiber.StatusUnauthorized).String(),
-			Data:   "refresh expired",
+			Status: "refresh expired",
+			Data:   nil,
 		})
 	}
 }
