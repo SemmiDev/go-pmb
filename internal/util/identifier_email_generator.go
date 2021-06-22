@@ -35,7 +35,7 @@ func NIMAndEmailGenerator(fullName string, path uint, year uint32) (nim, email s
 
 	nim = y + p + r
 
-	validName := strings.Title(fullName)
+	validName := strings.ToLower(fullName)
 	splitFullName := strings.Split(validName, " ")
 	if len(splitFullName) == 1 {
 		email = splitFullName[0] + r

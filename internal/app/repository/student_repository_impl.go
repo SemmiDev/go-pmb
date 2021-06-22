@@ -7,7 +7,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"strings"
 )
 
 const collectionName = "students"
@@ -65,13 +64,18 @@ func (r *db) GetByOID(oid primitive.ObjectID) (res *entity.Student, err error) {
 	defer cancel()
 
 	err = r.Collection.FindOne(ctx, bson.M{"_id": oid}).Decode(&res)
-	if err != nil {
-		if strings.Contains(err.Error(), "mongo: no documents") {
-			err = nil
-			return
-		}
-		return
-	}
+	exception2.PanicIfNeeded(err)
+	return
+}
 
+func (r *db) GetByIdentifier(identifier string) (student *entity.Student, err error) {
+	ctx, cancel := mongoConfig.NewMongoContext()
+	defer cancel()
+
+	err = r.Collection.FindOne(ctx, bson.M{
+		"identifier": identifier,
+	}).Decode(&student)
+
+	exception2.PanicIfNeeded(err)
 	return
 }

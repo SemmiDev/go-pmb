@@ -10,4 +10,5 @@ type StudentRepository interface {
 	GetById(id string) *entity.Student
 	FindAll() (students []entity.Student)
 	GetByOID(oid primitive.ObjectID) (*entity.Student, error)
+	GetByIdentifier(identifier string) (*entity.Student, error)
 }

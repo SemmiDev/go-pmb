@@ -53,7 +53,7 @@ func StartServer(app *fiber.App) {
 	}()
 
 	// Run server.
-	if err := app.Listen(os.Getenv("SERVER_URL")); err != nil {
+	if err := app.Listen(os.Getenv("APP_PORT")); err != nil {
 		log.Printf("Oops... Server is not running! Reason: %v", err)
 	}
 

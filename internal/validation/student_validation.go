@@ -23,3 +23,16 @@ func Validate(request model.CreateStudentRequest) {
 		})
 	}
 }
+
+func ValidateLogin(request model.AuthRequest) {
+	err := validation.ValidateStruct(&request,
+		validation.Field(&request.Identifier, validation.Required, validation.Length(10, 10)),
+		validation.Field(&request.Password, validation.Required),
+	)
+
+	if err != nil {
+		panic(exception.ValidationError{
+			Message: err.Error(),
+		})
+	}
+}

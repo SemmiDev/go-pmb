@@ -1,6 +1,16 @@
 package model
 
 type (
+	AuthRequest struct {
+		Identifier string `json:"identifier"`
+		Password   string `json:"password"`
+	}
+
+	Token struct {
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
+	}
+
 	CreateStudentRequest struct {
 		ID                 string `json:"-"`
 		FullName           string `json:"full_name"`

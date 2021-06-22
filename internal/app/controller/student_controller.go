@@ -19,6 +19,8 @@ func NewStudentController(studentService *service.StudentService) StudentControl
 func (controller *StudentController) Route(app *fiber.App) {
 	api := app.Group("/api/v1")
 
+	api.Post("/login", controller.Login)
+
 	api.Post("/students", controller.Create)
 	api.Get("/students", controller.List)
 	api.Get("/students/:id", controller.GetById)
@@ -56,5 +58,26 @@ func (controller *StudentController) List(c *fiber.Ctx) error {
 		Code:   200,
 		Status: "OK",
 		Data:   responses,
+	})
+}
+
+func (controller *StudentController) Login(c *fiber.Ctx) error {
+	var request model.AuthRequest
+	err := c.BodyParser(&request)
+	exception2.PanicIfNeeded(err)
+
+	token := controller.StudentService.Login(c, &request)
+	if token != nil {
+		return c.JSON(model.WebResponse{
+			Code:   fiber.StatusOK,
+			Status: "ok",
+			Data:   token,
+		})
+	}
+
+	return c.JSON(model.WebResponse{
+		Code:   fiber.StatusUnauthorized,
+		Status: "unauthorozed",
+		Data:   "unauthorozed",
 	})
 }
