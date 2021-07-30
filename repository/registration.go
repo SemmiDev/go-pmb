@@ -3,6 +3,7 @@ package repository
 import (
 	"go-clean/config"
 	"go-clean/entity"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 )
@@ -31,4 +32,24 @@ func (r *db) Insert(register *entity.Registration) error {
 	}
 
 	return nil
+}
+
+func (r *db) GetByEmail(email string) (register *entity.Registration, err error) {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+
+	_ = r.Collection.FindOne(ctx, bson.M{
+		"email": email,
+	}).Decode(&register)
+	return
+}
+
+func (r *db) GetByPhone(phone string) (register *entity.Registration, err error) {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+
+	_ = r.Collection.FindOne(ctx, bson.M{
+		"phone": phone,
+	}).Decode(&register)
+	return
 }

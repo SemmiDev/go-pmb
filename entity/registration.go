@@ -15,15 +15,17 @@ type Registration struct {
 	ID        string  `bson:"id"`
 	Name      string  `bson:"name"`
 	Email     string  `bson:"email"`
-	phone     string  `bson:"phone"`
+	Phone     string  `bson:"phone"`
 	Username  string  `bson:"username"`
 	Password  string  `bson:"password"`
 	Kind      Program `bson:"kind"`
-	CreatedAt int64   `bson:"created_at"`
+	CreatedAt string  `bson:"created_at"`
 }
 
 type RegistrationRepository interface {
 	Insert(register *Registration) error
+	GetByEmail(email string) (*Registration, error)
+	GetByPhone(phone string) (*Registration, error)
 }
 
 type RegistrationService interface {

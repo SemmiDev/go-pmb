@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	config2 "go-clean/config"
+	"go-clean/config"
 	"go-clean/controller"
-	middleware2 "go-clean/middleware"
+	"go-clean/middleware"
 	"go-clean/repository"
 	"go-clean/service"
 	"log"
@@ -14,21 +14,21 @@ import (
 
 func main() {
 	// setup configuration
-	configuration := config2.New()
+	configuration := config.New()
 	// setup database
-	database := config2.NewMongoDatabase(configuration)
+	database := config.NewMongoDatabase(configuration)
 	// setup repository
-	studentRepository := repository.NewRegistrationRepository(database)
+	registrationRepository := repository.NewRegistrationRepository(database)
 	// setup service
-	studentService := service.NewRegistrationService(&studentRepository)
+	registrationService := service.NewRegistrationService(&registrationRepository)
 	// Setup controller
-	studentController := controller.NewRegistrationController(&studentService)
+	registrationController := controller.NewRegistrationController(&registrationService)
 	// Setup fiber
 	app := fiber.New()
 	// Setup middleware
-	middleware2.FiberMiddleware(app)
+	middleware.FiberMiddleware(app)
 	// Setup Routing
-	studentController.Route(app)
+	registrationController.Route(app)
 
 	// Run Server
 	Run(app)

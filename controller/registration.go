@@ -65,6 +65,16 @@ func (c *RegistrationController) Create(ctx *fiber.Ctx) error {
 	}
 
 	response, err := c.RegistrationService.Create(&request, program)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse{
+			Code:         fiber.StatusBadRequest,
+			Status:       "Bad Request",
+			Error:        true,
+			ErrorMessage: err.Error(),
+			Data:         nil,
+		})
+	}
+
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse{
 		Code:         fiber.StatusCreated,
 		Status:       "CREATED",
