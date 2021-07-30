@@ -77,7 +77,7 @@ func (c *RegistrationController) Create(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse{
 		Code:         fiber.StatusCreated,
-		Status:       "CREATED",
+		Status:       "Created",
 		Error:        false,
 		ErrorMessage: nil,
 		Data:         response,

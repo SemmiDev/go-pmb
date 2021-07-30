@@ -53,3 +53,9 @@ func (r *db) GetByPhone(phone string) (register *entity.Registration, err error)
 	}).Decode(&register)
 	return
 }
+
+func (r *db) DeleteAll() {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+	_, _ = r.Collection.DeleteMany(ctx, bson.M{})
+}

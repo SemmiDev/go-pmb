@@ -26,6 +26,7 @@ type RegistrationRepository interface {
 	Insert(register *Registration) error
 	GetByEmail(email string) (*Registration, error)
 	GetByPhone(phone string) (*Registration, error)
+	DeleteAll()
 }
 
 type RegistrationService interface {
