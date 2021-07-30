@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/joho/godotenv"
-	exception2 "go-clean/internal/exception"
+	"log"
 	"os"
 )
 
@@ -10,7 +10,7 @@ type Config interface {
 	Get(key string) string
 }
 
-type configImpl struct {}
+type configImpl struct{}
 
 func (config *configImpl) Get(key string) string {
 	return os.Getenv(key)
@@ -18,6 +18,8 @@ func (config *configImpl) Get(key string) string {
 
 func New(filenames ...string) Config {
 	err := godotenv.Load(filenames...)
-	exception2.PanicIfNeeded(err)
+	if err != nil {
+		log.Fatalf("config.New: %v", err.Error())
+	}
 	return &configImpl{}
 }

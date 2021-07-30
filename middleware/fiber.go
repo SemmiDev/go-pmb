@@ -13,7 +13,7 @@ func FiberMiddleware(a *fiber.App) {
 		cors.New(),
 		// Add simple logger.
 		logger.New(),
-		// add recoverer for panic
+		// add recovered for panic
 		recover.New(),
 	)
 }

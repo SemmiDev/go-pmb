@@ -1,8 +1,3 @@
-# Go-Lang Student 
+# Go-Lang Clean Arch
 
-## Framework
-
-- Web : GoFiber
-- Validation : Go-Ozzo
-- Configuration : GoDotEnv
-- Database : MongoDB
+**Controller** **-** **Service** **-** **Repository**

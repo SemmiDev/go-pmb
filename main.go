@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-clean/internal/app/controller"
-	"go-clean/internal/app/repository"
-	"go-clean/internal/app/service"
-	"go-clean/internal/config"
-	"go-clean/internal/middleware"
+	config2 "go-clean/config"
+	"go-clean/controller"
+	middleware2 "go-clean/middleware"
+	"go-clean/repository"
+	"go-clean/service"
 	"log"
 	"os"
 	"os/signal"
@@ -14,27 +14,27 @@ import (
 
 func main() {
 	// setup configuration
-	configuration := config.New()
+	configuration := config2.New()
 	// setup database
-	database := config.NewMongoDatabase(configuration)
+	database := config2.NewMongoDatabase(configuration)
 	// setup repository
-	studentRepository := repository.NewStudentRepository(database)
+	studentRepository := repository.NewRegistrationRepository(database)
 	// setup service
-	studentService := service.NewStudentService(&studentRepository)
+	studentService := service.NewRegistrationService(&studentRepository)
 	// Setup controller
-	studentController := controller.NewStudentController(&studentService)
+	studentController := controller.NewRegistrationController(&studentService)
 	// Setup fiber
-	app := fiber.New(config.NewFiberConfig())
+	app := fiber.New()
 	// Setup middleware
-	middleware.FiberMiddleware(app)
+	middleware2.FiberMiddleware(app)
 	// Setup Routing
 	studentController.Route(app)
 
-	// Start server
-	StartServer(app)
+	// Run Server
+	Run(app)
 }
 
-func StartServer(app *fiber.App) {
+func Run(app *fiber.App) {
 	// Create channel for idle connections.
 	idleConsClosed := make(chan struct{})
 

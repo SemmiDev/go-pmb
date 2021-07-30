@@ -16,6 +16,7 @@ require (
 	github.com/twinj/uuid v1.0.0
 	github.com/valyala/fasthttp v1.22.0 // indirect
 	go.mongodb.org/mongo-driver v1.4.6
+	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/sys v0.0.0-20210305230114-8fe3ee5dd75b // indirect
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 )

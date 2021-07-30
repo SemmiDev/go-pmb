@@ -2,9 +2,9 @@ package config
 
 import (
 	"context"
-	exception2 "go-clean/internal/exception"
 	"go.mongodb.org/mongo-driver/mongo"
-	options2 "go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 	"strconv"
 	"time"
 )
@@ -14,29 +14,39 @@ func NewMongoDatabase(configuration Config) *mongo.Database {
 	defer cancel()
 
 	mongoPoolMin, err := strconv.Atoi(configuration.Get("MONGO_POOL_MIN"))
-	exception2.PanicIfNeeded(err)
+	if err != nil {
+		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
+	}
 
 	mongoPoolMax, err := strconv.Atoi(configuration.Get("MONGO_POOL_MAX"))
-	exception2.PanicIfNeeded(err)
+	if err != nil {
+		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
+	}
 
 	mongoMaxIdleTime, err := strconv.Atoi(configuration.Get("MONGO_MAX_IDLE_TIME_SECOND"))
-	exception2.PanicIfNeeded(err)
+	if err != nil {
+		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
+	}
 
-	option := options2.Client().
+	option := options.Client().
 		SetMinPoolSize(uint64(mongoPoolMin)).
 		SetMaxPoolSize(uint64(mongoPoolMax)).
 		SetMaxConnIdleTime(time.Duration(mongoMaxIdleTime) * time.Second)
 
 	client, err := mongo.NewClient(option)
-	exception2.PanicIfNeeded(err)
+	if err != nil {
+		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
+	}
 
 	err = client.Connect(ctx)
-	exception2.PanicIfNeeded(err)
+	if err != nil {
+		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
+	}
 
 	database := client.Database(configuration.Get("MONGO_DATABASE"))
 	return database
 }
 
 func NewMongoContext() (context.Context, context.CancelFunc) {
-	return context.WithTimeout(context.Background(), 10 * time.Second)
+	return context.WithTimeout(context.Background(), 10*time.Second)
 }

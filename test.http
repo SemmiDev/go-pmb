@@ -1,31 +1,12 @@
-### Get All Students
-GET http://localhost:9090/api/v1/students
-Accept: application/json
+## REGISTER
 
-### Get Student by ID
-GET http://localhost:9090/api/v1/students/d0bfa4e1-2bcb-49f9-af92-5845d35bf0aa
-Accept: application/json
-
-### Create New Student
-POST http://localhost:9090/api/v1/students
-Content-Type: application/json
-Accept: application/json
-
-{
-  "full_name": "Izzah",
-  "email": "izzah@gmail.com" ,
-  "phone_number": "082387325971",
-  "path": 2,
-  "year": 2022,
-  "registration_number": "1254567890"
-}
-
-### LOGIN
-POST localhost:9090/api/v1/login
+POST http://localhost:9090/api/v1/registration
 Accept: application/json
 Content-Type: application/json
 
 {
-  "identifier": "2203116837",
-  "password": "921228dd-2975-4df8-b0b7-dcb88414e39d"
+  "name":  "Sammi Aldhi Yanto",
+  "email": "sammidev@gmail.com",
+  "phone": "082387325971",
+  "program": "S1D3D4"
 }
