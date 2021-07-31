@@ -41,9 +41,7 @@ func TestRegistrationController_Create(t *testing.T) {
 	assert.NotNil(t, createRegistrationResponse.Username)
 	assert.NotNil(t, createRegistrationResponse.Password)
 	assert.Equal(t, model.S2Bill, createRegistrationResponse.Bill)
-	assert.Equal(t, model.S2AccountNumber, createRegistrationResponse.AccountNumber)
 	assert.NotEqual(t, model.S1D3D4Bill, createRegistrationResponse.Bill)
-	assert.NotEqual(t, model.S1D3D4AccountNumber, createRegistrationResponse.Bill)
 }
 
 func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
@@ -84,7 +82,7 @@ func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
 }
 
 func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
@@ -125,7 +123,7 @@ func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
 }
 
 func TestRegistrationController_CreateFailedNameIsEmpty(t *testing.T) {
@@ -162,7 +160,7 @@ func TestRegistrationController_CreateFailedNameIsEmpty(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
 }
 
 func TestRegistrationController_CreateFailedRequestsIsEmpty(t *testing.T) {
@@ -193,6 +191,7 @@ func TestRegistrationController_CreateFailedRequestsIsEmpty(t *testing.T) {
 			"Required_Email": "Email Is Empty",
 			"Required_Name":  "Name Is Empty",
 			"Required_Phone": "Phone Is Empty",
+			"invalid_Phone":  "Phone Number Is Not Valid",
 			"invalid_Email":  "Email Is Not Valid"},
 		webResponse.ErrorMessage)
 	assert.Nil(t, webResponse.Data)
@@ -203,7 +202,7 @@ func TestRegistrationController_CreateFailedRequestsIsEmpty(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
 }
 
 func TestRegistrationController_CreateFailedInvalidPhone(t *testing.T) {
@@ -241,7 +240,7 @@ func TestRegistrationController_CreateFailedInvalidPhone(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
 }
 
 func TestRegistrationController_CreateFailedInvalidPhoneAndEmail(t *testing.T) {
@@ -281,7 +280,7 @@ func TestRegistrationController_CreateFailedInvalidPhoneAndEmail(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
 }
 
 func TestRegistrationController_CreateFailedProgramNotRecognize(t *testing.T) {
@@ -320,5 +319,93 @@ func TestRegistrationController_CreateFailedProgramNotRecognize(t *testing.T) {
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
 	assert.Empty(t, createRegistrationResponse.Bill)
-	assert.Empty(t, createRegistrationResponse.AccountNumber)
+	assert.Empty(t, createRegistrationResponse.VirtualAccount)
+}
+
+func TestRegistrationController_UpdateSuccess(t *testing.T) {
+	registrationRepository.DeleteAll()
+	createRegistrationRequest := model.RegistrationRequest{
+		Name:    "Sammi Aldhi Yanto",
+		Email:   "sammidev@gmail.com",
+		Phone:   "082387325971",
+		Program: "S2",
+	}
+	temp, _ := registrationService.Create(&createRegistrationRequest, model.S2)
+
+	updateStatusRequest := model.UpdateStatus{
+		VirtualAccount: temp.VirtualAccount,
+	}
+
+	requestBody, _ := json.Marshal(updateStatusRequest)
+	request := httptest.NewRequest("PUT", "/api/v1/registration/status", bytes.NewBuffer(requestBody))
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
+
+	response, _ := app.Test(request)
+	assert.Equal(t, 200, response.StatusCode)
+	responseBody, _ := ioutil.ReadAll(response.Body)
+
+	webResponse := model.WebResponse{}
+	json.Unmarshal(responseBody, &webResponse)
+	assert.Equal(t, 200, webResponse.Code)
+	assert.Equal(t, "Ok", webResponse.Status)
+	assert.Equal(t, false, webResponse.Error)
+	assert.Equal(t, nil, webResponse.ErrorMessage)
+	assert.Equal(t, map[string]interface{}(map[string]interface{}{"status": "updated"}), webResponse.Data)
+}
+
+func TestRegistrationController_UpdateFailedEmptyVA(t *testing.T) {
+	registrationRepository.DeleteAll()
+	createRegistrationRequest := model.RegistrationRequest{
+		Name:    "Sammi Aldhi Yanto",
+		Email:   "sammidev@gmail.com",
+		Phone:   "082387325971",
+		Program: "S2",
+	}
+	registrationService.Create(&createRegistrationRequest, model.S2)
+
+	updateStatusRequest := model.UpdateStatus{
+		VirtualAccount: "",
+	}
+
+	requestBody, _ := json.Marshal(updateStatusRequest)
+	request := httptest.NewRequest("PUT", "/api/v1/registration/status", bytes.NewBuffer(requestBody))
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
+
+	response, _ := app.Test(request)
+	assert.Equal(t, 400, response.StatusCode)
+	responseBody, _ := ioutil.ReadAll(response.Body)
+
+	webResponse := model.WebResponse{}
+	json.Unmarshal(responseBody, &webResponse)
+	assert.Equal(t, 400, webResponse.Code)
+	assert.Equal(t, "Bad Request", webResponse.Status)
+	assert.Equal(t, true, webResponse.Error)
+	assert.Equal(t, map[string]interface{}(map[string]interface{}{"Required_VA": "Virtual Account Is Empty"}), webResponse.ErrorMessage)
+	assert.Nil(t, webResponse.Data)
+}
+
+func TestRegistrationController_UpdateFailedVaNotFound(t *testing.T) {
+	registrationRepository.DeleteAll()
+	updateStatusRequest := model.UpdateStatus{
+		VirtualAccount: "1241231321231",
+	}
+
+	requestBody, _ := json.Marshal(updateStatusRequest)
+	request := httptest.NewRequest("PUT", "/api/v1/registration/status", bytes.NewBuffer(requestBody))
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
+
+	response, _ := app.Test(request)
+	assert.Equal(t, 500, response.StatusCode)
+	responseBody, _ := ioutil.ReadAll(response.Body)
+
+	webResponse := model.WebResponse{}
+	json.Unmarshal(responseBody, &webResponse)
+	assert.Equal(t, 500, webResponse.Code)
+	assert.Equal(t, "Internal Server Error", webResponse.Status)
+	assert.Equal(t, true, webResponse.Error)
+	assert.Equal(t, "va not found", webResponse.ErrorMessage)
+	assert.Nil(t, webResponse.Data)
 }

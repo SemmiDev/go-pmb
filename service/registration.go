@@ -35,45 +35,58 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	username := uuid.NewString()
 	password := uuid.NewString()
 	passwordHash, _ := util.Hash(password)
+	va := util.RandomVirtualAccount(request.Phone)
 
-	response := model.RegistrationResponse{
-		Username: username,
-		Password: password,
+	var register *model.Registration
+	if program == model.S1D3D4 {
+		register = model.RegisterS2PrototypePrototype()
+
+		register.ID = uuid.NewString()
+		register.Name = request.Name
+		register.Email = request.Email
+		register.Phone = request.Phone
+		register.Username = username
+		register.Password = passwordHash
+		register.VirtualAccount = va
+		register.CreatedAt = time.Now().String()
+	} else {
+		register = model.RegisterS2PrototypePrototype()
+
+		register.ID = uuid.NewString()
+		register.Name = request.Name
+		register.Email = request.Email
+		register.Phone = request.Phone
+		register.Username = username
+		register.Password = passwordHash
+		register.VirtualAccount = va
+		register.CreatedAt = time.Now().String()
 	}
 
-	if program == model.S1D3D4 {
-		model.RegisterS1D3D4Prototype.ID = uuid.NewString()
-		model.RegisterS1D3D4Prototype.Name = request.Name
-		model.RegisterS1D3D4Prototype.Email = request.Email
-		model.RegisterS1D3D4Prototype.Phone = request.Phone
-		model.RegisterS1D3D4Prototype.Username = username
-		model.RegisterS1D3D4Prototype.Password = passwordHash
-		model.RegisterS1D3D4Prototype.CreatedAt = time.Now().String()
-		response.Bill = model.RegisterS1D3D4Prototype.Bill
-		response.AccountNumber = model.RegisterS1D3D4Prototype.AccountNumber
+	err := s.RegistrationRepository.Insert(register)
+	if err != nil {
+		log.Printf("Service.Create: %v", err.Error())
+		return nil, err
+	}
 
-		err := s.RegistrationRepository.Insert(model.RegisterS1D3D4Prototype)
-		if err != nil {
-			log.Printf("Service.Create: %v", err.Error())
-			return nil, err
-		}
-	} else {
-		model.RegisterS2Prototype.ID = uuid.NewString()
-		model.RegisterS2Prototype.Name = request.Name
-		model.RegisterS2Prototype.Email = request.Email
-		model.RegisterS2Prototype.Phone = request.Phone
-		model.RegisterS2Prototype.Username = username
-		model.RegisterS2Prototype.Password = passwordHash
-		model.RegisterS2Prototype.CreatedAt = time.Now().String()
-		response.Bill = model.RegisterS2Prototype.Bill
-		response.AccountNumber = model.RegisterS2Prototype.AccountNumber
-
-		err := s.RegistrationRepository.Insert(model.RegisterS2Prototype)
-		if err != nil {
-			log.Printf("Service.Create: %v", err.Error())
-			return nil, err
-		}
+	response := model.RegistrationResponse{
+		Username:       username,
+		Password:       password,
+		VirtualAccount: va,
+		Bill:           register.Bill,
 	}
 
 	return &response, nil
+}
+
+func (s *service) UpdateStatusBilling(va *model.UpdateStatus) error {
+	exists, err := s.RegistrationRepository.GetByVa(va)
+	if err != nil {
+		return err
+	}
+	err = s.RegistrationRepository.UpdateStatus(exists.VirtualAccount)
+	if err != nil {
+		log.Printf("Service.UpdateStatusBilling: %v \n", err.Error())
+		return err
+	}
+	return nil
 }

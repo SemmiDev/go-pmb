@@ -16,8 +16,10 @@ func NewRegistrationController(registrationService *model.RegistrationService) R
 }
 
 func (c *RegistrationController) Route(app *fiber.App) {
-	api := app.Group("/api/v1")
-	api.Post("/registration", c.Create)
+	api := app.Group("/api/v1/registration")
+
+	api.Post("/", c.Create)
+	api.Put("/status", c.UpdateStatusBilling)
 }
 
 func (c *RegistrationController) Create(ctx *fiber.Ctx) error {
@@ -80,5 +82,52 @@ func (c *RegistrationController) Create(ctx *fiber.Ctx) error {
 		Error:        false,
 		ErrorMessage: nil,
 		Data:         response,
+	})
+}
+
+func (c *RegistrationController) UpdateStatusBilling(ctx *fiber.Ctx) error {
+	var request model.UpdateStatus
+
+	err := ctx.BodyParser(&request)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(model.WebResponse{
+			Code:         fiber.StatusUnprocessableEntity,
+			Status:       "Unprocessable Entity",
+			Error:        true,
+			ErrorMessage: "Cannot unmarshal body",
+			Data:         nil,
+		})
+	}
+
+	errs := request.Validate()
+	if errs != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse{
+			Code:         fiber.StatusBadRequest,
+			Status:       "Bad Request",
+			Error:        true,
+			ErrorMessage: errs,
+			Data:         nil,
+		})
+	}
+
+	err = c.RegistrationService.UpdateStatusBilling(&request)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(model.WebResponse{
+			Code:         fiber.StatusInternalServerError,
+			Status:       "Internal Server Error",
+			Error:        true,
+			ErrorMessage: err.Error(),
+			Data:         nil,
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse{
+		Code:         fiber.StatusOK,
+		Status:       "Ok",
+		Error:        false,
+		ErrorMessage: nil,
+		Data: fiber.Map{
+			"status": "updated",
+		},
 	})
 }

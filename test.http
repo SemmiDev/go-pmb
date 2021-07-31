@@ -18,6 +18,15 @@ Content-Type: application/json
 {
   "name":  "Rahmatul Izzah Annisa",
   "email": "izzah@gmail.com",
-  "phone": "082387325972",
+  "phone": "082387325973",
   "program": "S2"
+}
+
+### UPDATE STATUS
+PUT http://localhost:9090/api/v1/registration/status
+Accept: application/json
+Content-Type: application/json
+
+{
+  "virtual_account": "1627718194327300324082387325973"
 }
