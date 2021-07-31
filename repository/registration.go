@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
@@ -14,13 +14,13 @@ type db struct {
 	Collection *mongo.Collection
 }
 
-func NewRegistrationRepository(database *mongo.Database) entity.RegistrationRepository {
+func NewRegistrationRepository(database *mongo.Database) model.RegistrationRepository {
 	return &db{
 		Collection: database.Collection(collectionName),
 	}
 }
 
-func (r *db) Insert(register *entity.Registration) error {
+func (r *db) Insert(register *model.Registration) error {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
@@ -34,7 +34,7 @@ func (r *db) Insert(register *entity.Registration) error {
 	return nil
 }
 
-func (r *db) GetByEmail(email string) (register *entity.Registration, err error) {
+func (r *db) GetByEmail(email string) (register *model.Registration, err error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
@@ -42,7 +42,7 @@ func (r *db) GetByEmail(email string) (register *entity.Registration, err error)
 	return
 }
 
-func (r *db) GetByPhone(phone string) (register *entity.Registration, err error) {
+func (r *db) GetByPhone(phone string) (register *model.Registration, err error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 

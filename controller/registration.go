@@ -1,16 +1,15 @@
 package controller
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/gofiber/fiber/v2"
 )
 
 type RegistrationController struct {
-	RegistrationService entity.RegistrationService
+	RegistrationService model.RegistrationService
 }
 
-func NewRegistrationController(registrationService *entity.RegistrationService) RegistrationController {
+func NewRegistrationController(registrationService *model.RegistrationService) RegistrationController {
 	return RegistrationController{
 		RegistrationService: *registrationService,
 	}
@@ -46,12 +45,12 @@ func (c *RegistrationController) Create(ctx *fiber.Ctx) error {
 		})
 	}
 
-	var program entity.Program
+	var program model.Program
 	switch request.Program {
 	case "S1D3D4":
-		program = entity.S1D3D4
+		program = model.S1D3D4
 	case "S2":
-		program = entity.S2
+		program = model.S2
 	default:
 		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse{
 			Code:   fiber.StatusBadRequest,

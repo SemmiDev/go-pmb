@@ -30,13 +30,14 @@ func main() {
 	// Setup Routing
 	registrationController.Route(app)
 
-	// Run Server
-	Run(app)
+	// StartServer
+	StartServer(app)
 }
 
-func Run(app *fiber.App) {
+// StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
+func StartServerWithGracefulShutdown(a *fiber.App) {
 	// Create channel for idle connections.
-	idleConsClosed := make(chan struct{})
+	idleConnsClosed := make(chan struct{})
 
 	go func() {
 		sigint := make(chan os.Signal, 1)
@@ -44,18 +45,26 @@ func Run(app *fiber.App) {
 		<-sigint
 
 		// Received an interrupt signal, shutdown.
-		if err := app.Shutdown(); err != nil {
+		if err := a.Shutdown(); err != nil {
 			// Error from closing listeners, or context timeout:
 			log.Printf("Oops... Server is not shutting down! Reason: %v", err)
 		}
 
-		close(idleConsClosed)
+		close(idleConnsClosed)
 	}()
 
 	// Run server.
-	if err := app.Listen(os.Getenv("APP_PORT")); err != nil {
+	if err := a.Listen(os.Getenv("APP_PORT")); err != nil {
 		log.Printf("Oops... Server is not running! Reason: %v", err)
 	}
 
-	<-idleConsClosed
+	<-idleConnsClosed
+}
+
+// StartServer func for starting a simple server.
+func StartServer(a *fiber.App) {
+	// Run server.
+	if err := a.Listen(os.Getenv("APP_PORT")); err != nil {
+		log.Printf("Oops... Server is not running! Reason: %v", err)
+	}
 }

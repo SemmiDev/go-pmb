@@ -1,4 +1,4 @@
-package entity
+package model
 
 type (
 	Program       string
@@ -9,8 +9,8 @@ type (
 const (
 	S1D3D4              Program       = "S1D3D4"
 	S2                  Program       = "S2"
-	S1D3D4Bill          Bill          = 252000
-	S2Bill              Bill          = 152000
+	S1D3D4Bill          Bill          = 152000
+	S2Bill              Bill          = 252000
 	S1D3D4AccountNumber AccountNumber = "8040100121102341"
 	S2AccountNumber     AccountNumber = "8040100121102342"
 )

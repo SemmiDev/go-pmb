@@ -1,5 +1,4 @@
 ## REGISTER
-
 POST http://localhost:9090/api/v1/registration
 Accept: application/json
 Content-Type: application/json
@@ -9,4 +8,16 @@ Content-Type: application/json
   "email": "sammidev@gmail.com",
   "phone": "082387325971",
   "program": "S1D3D4"
+}
+
+### REGISTER
+POST http://localhost:9090/api/v1/registration
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name":  "Rahmatul Izzah Annisa",
+  "email": "izzah@gmail.com",
+  "phone": "082387325972",
+  "program": "S2"
 }

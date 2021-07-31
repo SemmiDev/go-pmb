@@ -1,63 +1,40 @@
 package model
 
-import (
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
-	"html"
-	"regexp"
-	"strings"
-)
-
-type RegistrationRequest struct {
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Phone   string `json:"phone"`
-	Program string `json:"program"`
+type Registration struct {
+	ID            string        `bson:"id"`
+	Name          string        `bson:"name"`
+	Email         string        `bson:"email"`
+	Phone         string        `bson:"phone"`
+	Username      string        `bson:"username"`
+	Password      string        `bson:"password"`
+	Kind          Program       `bson:"kind"`
+	Bill          Bill          `bson:"bill"`
+	AccountNumber AccountNumber `bson:"account_number"`
+	Status        bool          `bson:"status"`
+	CreatedAt     string        `bson:"created_at"`
 }
 
-type RegistrationResponse struct {
-	Username      string               `json:"username"`
-	Password      string               `json:"password"`
-	Bill          entity.Bill          `json:"bill"`
-	AccountNumber entity.AccountNumber `json:"account_number"`
+var RegisterS1D3D4Prototype = &Registration{
+	Kind:          S1D3D4,
+	Bill:          S1D3D4Bill,
+	AccountNumber: S1D3D4AccountNumber,
+	Status:        false,
 }
 
-var (
-	emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	phoneRegexp = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
-)
+var RegisterS2Prototype = &Registration{
+	Kind:          S2,
+	Bill:          S2Bill,
+	AccountNumber: S2AccountNumber,
+	Status:        false,
+}
 
-func (r *RegistrationRequest) Validate() map[string]string {
-	var errorCollections = make(map[string]string)
+type RegistrationRepository interface {
+	Insert(register *Registration) error
+	GetByEmail(email string) (*Registration, error)
+	GetByPhone(phone string) (*Registration, error)
+	DeleteAll()
+}
 
-	r.Name = html.EscapeString(strings.TrimSpace(r.Name))
-	r.Email = html.EscapeString(strings.TrimSpace(r.Email))
-	r.Phone = html.EscapeString(strings.TrimSpace(r.Phone))
-
-	if r.Name == "" {
-		errorCollections["Required_Name"] = "Name Is Empty"
-	}
-	if len(r.Name) > 100 {
-		errorCollections["Length_Name_Too_Long"] = "Length_Name_Too_Long"
-	}
-	if r.Email == "" {
-		errorCollections["Required_Email"] = "Email Is Empty"
-	}
-	if r.Phone == "" {
-		errorCollections["Required_Phone"] = "Phone Is Empty"
-	}
-	if r.Program == "" {
-		errorCollections["Required_Program"] = "Program Is Empty"
-	}
-
-	if emailRegexp.MatchString(r.Email) == false {
-		errorCollections["invalid_Email"] = "Email Is Not Valid"
-	}
-	if phoneRegexp.MatchString(r.Phone) == false {
-		errorCollections["invalid_Phone"] = "Phone Number Is Not Valid"
-	}
-
-	if len(errorCollections) > 0 {
-		return errorCollections
-	}
-	return nil
+type RegistrationService interface {
+	Create(request *RegistrationRequest, program Program) (*RegistrationResponse, error)
 }

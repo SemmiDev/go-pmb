@@ -3,7 +3,6 @@ package controller
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -41,6 +40,10 @@ func TestRegistrationController_Create(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.NotNil(t, createRegistrationResponse.Username)
 	assert.NotNil(t, createRegistrationResponse.Password)
+	assert.Equal(t, model.S2Bill, createRegistrationResponse.Bill)
+	assert.Equal(t, model.S2AccountNumber, createRegistrationResponse.AccountNumber)
+	assert.NotEqual(t, model.S1D3D4Bill, createRegistrationResponse.Bill)
+	assert.NotEqual(t, model.S1D3D4AccountNumber, createRegistrationResponse.Bill)
 }
 
 func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
@@ -50,7 +53,7 @@ func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
 		Email: "sammidev@gmail.com",
 		Phone: "082387325971",
 	}
-	registrationService.Create(&createRegistrationRequest, entity.S2)
+	registrationService.Create(&createRegistrationRequest, model.S2)
 
 	createRegistrationRequest2 := model.RegistrationRequest{
 		Name:    "Sammi Aldhi Yanto",
@@ -80,6 +83,8 @@ func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationRequest2)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
 
 func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
@@ -89,7 +94,7 @@ func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
 		Email: "sammidev@gmail.com",
 		Phone: "082387325971",
 	}
-	registrationService.Create(&createRegistrationRequest, entity.S2)
+	registrationService.Create(&createRegistrationRequest, model.S2)
 
 	createRegistrationRequest2 := model.RegistrationRequest{
 		Name:    "Sammi Aldhi Yanto",
@@ -119,6 +124,8 @@ func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationRequest2)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
 
 func TestRegistrationController_CreateFailedNameIsEmpty(t *testing.T) {
@@ -154,6 +161,8 @@ func TestRegistrationController_CreateFailedNameIsEmpty(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
 
 func TestRegistrationController_CreateFailedRequestsIsEmpty(t *testing.T) {
@@ -193,6 +202,8 @@ func TestRegistrationController_CreateFailedRequestsIsEmpty(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
 
 func TestRegistrationController_CreateFailedInvalidPhone(t *testing.T) {
@@ -229,6 +240,8 @@ func TestRegistrationController_CreateFailedInvalidPhone(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
 
 func TestRegistrationController_CreateFailedInvalidPhoneAndEmail(t *testing.T) {
@@ -267,6 +280,8 @@ func TestRegistrationController_CreateFailedInvalidPhoneAndEmail(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
 
 func TestRegistrationController_CreateFailedProgramNotRecognize(t *testing.T) {
@@ -304,4 +319,6 @@ func TestRegistrationController_CreateFailedProgramNotRecognize(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.Empty(t, createRegistrationResponse.Username)
 	assert.Empty(t, createRegistrationResponse.Password)
+	assert.Empty(t, createRegistrationResponse.Bill)
+	assert.Empty(t, createRegistrationResponse.AccountNumber)
 }
