@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"html"
 	"regexp"
 	"strings"
@@ -14,8 +15,10 @@ type RegistrationRequest struct {
 }
 
 type RegistrationResponse struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username      string               `json:"username"`
+	Password      string               `json:"password"`
+	Bill          entity.Bill          `json:"bill"`
+	AccountNumber entity.AccountNumber `json:"account_number"`
 }
 
 var (

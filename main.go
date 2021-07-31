@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/SemmiDev/fiber-go-clean-arch/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/controller"
+	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
+	"github.com/SemmiDev/fiber-go-clean-arch/repository"
+	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
-	"go-clean/config"
-	"go-clean/controller"
-	"go-clean/middleware"
-	"go-clean/repository"
-	"go-clean/service"
 	"log"
 	"os"
 	"os/signal"

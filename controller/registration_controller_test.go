@@ -3,9 +3,9 @@ package controller
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/stretchr/testify/assert"
-	"go-clean/entity"
-	"go-clean/model"
 	"io/ioutil"
 	"net/http/httptest"
 	"testing"

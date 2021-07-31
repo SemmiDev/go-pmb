@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/gofiber/fiber/v2"
-	"go-clean/entity"
-	"go-clean/model"
 )
 
 type RegistrationController struct {
