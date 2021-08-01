@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/SemmiDev/fiber-go-clean-arch/auth"
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/controller"
 	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
@@ -22,7 +23,21 @@ func main() {
 	// setup service
 	registrationService := service.NewRegistrationService(&registrationRepository)
 	// Setup controller
-	registrationController := controller.NewRegistrationController(&registrationService)
+
+	token := auth.NewToken()
+	redisService, err := config.NewRedisDB(
+		os.Getenv("REDIS_HOST"),
+		os.Getenv("REDIS_PORT"),
+		os.Getenv("REDIS_PASSWORD"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	registrationController := controller.NewRegistrationController(
+		&registrationService,
+		redisService.Auth,
+		token,
+	)
 	// Setup fiber
 	app := fiber.New()
 	// Setup middleware

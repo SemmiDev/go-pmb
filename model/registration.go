@@ -35,11 +35,13 @@ type RegistrationRepository interface {
 	GetByVa(va *UpdateStatus) (*Registration, error)
 	GetByEmail(email string) (*Registration, error)
 	GetByPhone(phone string) (*Registration, error)
+	GetByUsername(username *LoginRequest) (*Registration, error)
 	UpdateStatus(va string) error
 	DeleteAll()
 }
 
 type RegistrationService interface {
 	Create(request *RegistrationRequest, program Program) (*RegistrationResponse, error)
+	GetByUsername(req *LoginRequest) (*Registration, error)
 	UpdateStatusBilling(va *UpdateStatus) error
 }

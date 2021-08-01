@@ -17,3 +17,8 @@ type RegistrationResponse struct {
 type UpdateStatus struct {
 	VirtualAccount string `json:"virtual_account"`
 }
+
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

@@ -35,41 +35,61 @@ func (r *db) Insert(register *model.Registration) error {
 	return nil
 }
 
-func (r *db) GetByVa(va *model.UpdateStatus) (account *model.Registration, err error) {
+func (r *db) GetByVa(va *model.UpdateStatus) (*model.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	err = r.Collection.FindOne(ctx, bson.M{"virtual_account": va.VirtualAccount}).Decode(&account)
+	var account model.Registration
+	err := r.Collection.FindOne(ctx, bson.M{"virtual_account": va.VirtualAccount}).Decode(&account)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 			return nil, errors.New("va not found")
 		}
 		return nil, err
 	}
-	log.Println(account)
-	return account, nil
+	return &account, nil
 }
 
-func (r *db) GetByEmail(email string) (account *model.Registration, err error) {
+func (r *db) GetByUsername(req *model.LoginRequest) (*model.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	err = r.Collection.FindOne(ctx, bson.M{"email": email}).Decode(&account)
+	var account model.Registration
+	err := r.Collection.FindOne(ctx, bson.M{"username": req.Username}).Decode(&account)
 	if err != nil {
 		return nil, err
 	}
-	return
+	return &account, nil
 }
 
-func (r *db) GetByPhone(phone string) (account *model.Registration, err error) {
+func (r *db) GetByEmail(email string) (*model.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	err = r.Collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&account)
+	var account model.Registration
+	err := r.Collection.FindOne(ctx, bson.M{"email": email}).Decode(&account)
 	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			return nil, errors.New("user not found")
+		}
 		return nil, err
 	}
-	return
+	return &account, nil
+}
+
+func (r *db) GetByPhone(phone string) (*model.Registration, error) {
+	ctx, cancel := config.NewMongoContext()
+	defer cancel()
+
+	var account model.Registration
+	err := r.Collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&account)
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+	return &account, nil
 }
 
 func (r *db) UpdateStatus(va string) error {

@@ -28,5 +28,29 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "virtual_account": "1627718194327300324082387325973"
+  "virtual_account": "1627783231012575539082387325971"
+}
+
+### LOGIN
+POST http://localhost:9090/api/v1/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username" : "ed3c9d62-6edd-4b6f-a6cd-f53f984bb318",
+  "password" : "33656894-0a3c-4f1e-8f59-d86f8ff9353ab"
+}
+
+### LOGOUT
+POST http://localhost:9090/api/v1/auth/logout
+Accept: application/json
+Authorization: Bearer xyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjVkOGJhZjFiLTU5ZWItNGViMC05ZjhhLWY2N2NkYzE1OTQzZiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyNzc4NDQ2OSwidXNlcl9pZCI6ImU1ZjEwZWYwLWE2ZDMtNDNhZS04YjBjLWMzNmNiOTcyODM5ZSJ9.jLcRKSjmPHa2axCCraImnw1-w9cThy4ZrM-PX0hBL48
+
+### REFRESH
+POST http://localhost:9090/api/v1/auth/refresh
+Accept: application/json
+Content-Type: application/json
+
+{
+  "refresh_token": 123
 }

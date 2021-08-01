@@ -62,3 +62,20 @@ func (u *UpdateStatus) Validate() map[string]string {
 	}
 	return nil
 }
+
+func (r *LoginRequest) Validate() map[string]string {
+	var errorCollections = make(map[string]string)
+
+	if fmt.Sprint(r.Username) == "" {
+		errorCollections["Required_Username"] = "Username Is Empty"
+	}
+
+	if fmt.Sprint(r.Password) == "" {
+		errorCollections["Required_Password"] = "Password Is Empty"
+	}
+
+	if len(errorCollections) > 0 {
+		return errorCollections
+	}
+	return nil
+}

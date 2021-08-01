@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
-	"github.com/google/uuid"
+	"github.com/twinj/uuid"
 	"log"
 	"time"
 )
@@ -32,8 +32,8 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		return nil, errors.New("phone has been recorded")
 	}
 
-	username := uuid.NewString()
-	password := uuid.NewString()
+	username := uuid.NewV4().String()
+	password := uuid.NewV4().String()
 	passwordHash, _ := util.Hash(password)
 	va := util.RandomVirtualAccount(request.Phone)
 
@@ -41,7 +41,7 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	if program == model.S1D3D4 {
 		register = model.RegisterS2PrototypePrototype()
 
-		register.ID = uuid.NewString()
+		register.ID = uuid.NewV4().String()
 		register.Name = request.Name
 		register.Email = request.Email
 		register.Phone = request.Phone
@@ -52,7 +52,7 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	} else {
 		register = model.RegisterS2PrototypePrototype()
 
-		register.ID = uuid.NewString()
+		register.ID = uuid.NewV4().String()
 		register.Name = request.Name
 		register.Email = request.Email
 		register.Phone = request.Phone
@@ -76,6 +76,14 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	}
 
 	return &response, nil
+}
+
+func (s *service) GetByUsername(req *model.LoginRequest) (*model.Registration, error) {
+	exists, err := s.RegistrationRepository.GetByUsername(req)
+	if err != nil {
+		return nil, err
+	}
+	return exists, nil
 }
 
 func (s *service) UpdateStatusBilling(va *model.UpdateStatus) error {
