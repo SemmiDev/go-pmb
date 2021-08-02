@@ -3,7 +3,9 @@ package service
 import (
 	"errors"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/tasks"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
+	"github.com/hibiken/asynq"
 	"github.com/twinj/uuid"
 	"log"
 	"time"
@@ -11,11 +13,16 @@ import (
 
 type service struct {
 	RegistrationRepository model.RegistrationRepository
+	EmailAsynq             *asynq.Client
 }
 
-func NewRegistrationService(rp *model.RegistrationRepository) model.RegistrationService {
+func NewRegistrationService(
+	rp *model.RegistrationRepository,
+	EmailAsynq *asynq.Client) model.RegistrationService {
+
 	return &service{
 		RegistrationRepository: *rp,
+		EmailAsynq:             EmailAsynq,
 	}
 }
 
@@ -73,6 +80,24 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		Password:       password,
 		VirtualAccount: va,
 		Bill:           register.Bill,
+	}
+
+	// sent email
+	task, err := tasks.NewWelcomeEmailTask(
+		response.Username,
+		response.Password,
+		register.Email,
+		response.Bill,
+		response.VirtualAccount,
+	)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	// Process the task immediately in critical queue.
+	_, err = s.EmailAsynq.Enqueue(task)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return &response, nil

@@ -8,6 +8,7 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
 	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/hibiken/asynq"
 	"log"
 	"os"
 	"os/signal"
@@ -20,10 +21,17 @@ func main() {
 	database := config.NewMongoDatabase(configuration)
 	// setup repository
 	registrationRepository := repository.NewRegistrationRepository(database)
-	// setup service
-	registrationService := service.NewRegistrationService(&registrationRepository)
-	// Setup controller
 
+	// setup service
+	asyncRedisConnection := asynq.RedisClientOpt{
+		Addr: os.Getenv("REDIS_DSN"), // Redis server address
+	}
+	client := asynq.NewClient(asyncRedisConnection)
+	defer client.Close()
+
+	registrationService := service.NewRegistrationService(&registrationRepository, client)
+
+	// Setup controller
 	token := auth.NewToken()
 	redisService, err := config.NewRedisDB(
 		os.Getenv("REDIS_HOST"),

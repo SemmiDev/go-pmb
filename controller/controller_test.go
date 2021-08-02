@@ -20,7 +20,7 @@ func createTestApp() *fiber.App {
 var configuration = config.New("../.env")
 var database = config.NewMongoDatabase(configuration)
 var registrationRepository = repository.NewRegistrationRepository(database)
-var registrationService = service.NewRegistrationService(&registrationRepository)
+var registrationService = service.NewRegistrationService(&registrationRepository, nil)
 
 var token = auth.NewToken()
 var redisService, err = config.NewRedisDB(
