@@ -67,7 +67,7 @@ func (r *db) GetByEmail(email string) (*model.Registration, error) {
 	defer cancel()
 
 	var account model.Registration
-	err := r.Collection.FindOne(ctx, bson.M{"email": email}).Decode(&account)
+	err := r.Collection.FindOne(ctx, bson.M{"mailer": email}).Decode(&account)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 			return nil, errors.New("user not found")

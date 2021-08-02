@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
+	"github.com/SemmiDev/fiber-go-clean-arch/mailer/tasks"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/tasks"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/hibiken/asynq"
 	"github.com/twinj/uuid"
@@ -27,10 +27,10 @@ func NewRegistrationService(
 }
 
 func (s *service) Create(request *model.RegistrationRequest, program model.Program) (*model.RegistrationResponse, error) {
-	// check email if already exists
+	// check mailer if already exists
 	respEmail, _ := s.RegistrationRepository.GetByEmail(request.Email)
 	if respEmail != nil {
-		return nil, errors.New("email has been recorded")
+		return nil, errors.New("mailer has been recorded")
 	}
 
 	// check phone number if already exists
@@ -47,7 +47,6 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	var register *model.Registration
 	if program == model.S1D3D4 {
 		register = model.RegisterS2PrototypePrototype()
-
 		register.ID = uuid.NewV4().String()
 		register.Name = request.Name
 		register.Email = request.Email
@@ -58,7 +57,6 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		register.CreatedAt = time.Now().String()
 	} else {
 		register = model.RegisterS2PrototypePrototype()
-
 		register.ID = uuid.NewV4().String()
 		register.Name = request.Name
 		register.Email = request.Email
@@ -82,8 +80,8 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		Bill:           register.Bill,
 	}
 
-	// sent email
-	task, err := tasks.NewWelcomeEmailTask(
+	// sent mail
+	task, err := tasks.NewRegisterEmail(
 		response.Username,
 		response.Password,
 		register.Email,
@@ -91,13 +89,13 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		response.VirtualAccount,
 	)
 	if err != nil {
-		log.Fatalf(err.Error())
+		return nil, err
 	}
 
 	// Process the task immediately in critical queue.
 	_, err = s.EmailAsynq.Enqueue(task)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return &response, nil

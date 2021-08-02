@@ -1,15 +1,23 @@
 package main
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/tasks"
+	"github.com/SemmiDev/fiber-go-clean-arch/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/mailer/tasks"
 	"github.com/hibiken/asynq"
 	"log"
-	"os"
 )
 
 func main() {
+	// setup configuration
+	configuration := config.New()
+
+	redisDSN := configuration.Get("REDIS_DSN")
+	if redisDSN == "" {
+		redisDSN = "127.0.0.1:6379"
+	}
+
 	redisConnection := asynq.RedisClientOpt{
-		Addr: os.Getenv("REDIS_DSN"), // Redis server address
+		Addr: redisDSN, // Redis server address
 	}
 
 	worker := asynq.NewServer(redisConnection, asynq.Config{
@@ -26,10 +34,10 @@ func main() {
 	// Create a new task's mux instance.
 	mux := asynq.NewServeMux()
 	mux.HandleFunc(
-		tasks.TypeWelcomeEmail,       // task type
-		tasks.HandleEmailWelcomeTask, // handler function
+		tasks.TypeEmailRegister,       // task type
+		tasks.HandleEmailRegisterTask, // handler function
 	)
-	// Run email server.
+	// Run mailer server.
 	if err := worker.Run(mux); err != nil {
 		log.Fatal(err)
 	}

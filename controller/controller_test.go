@@ -7,7 +7,6 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
 	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
-	"os"
 )
 
 func createTestApp() *fiber.App {
@@ -17,16 +16,15 @@ func createTestApp() *fiber.App {
 	return app
 }
 
+// note: make sure asynq email server start first
 var configuration = config.New("../.env")
 var database = config.NewMongoDatabase(configuration)
 var registrationRepository = repository.NewRegistrationRepository(database)
-var registrationService = service.NewRegistrationService(&registrationRepository, nil)
+var asynq = config.NewAsynqClient(configuration)
+var registrationService = service.NewRegistrationService(&registrationRepository, asynq)
 
 var token = auth.NewToken()
-var redisService, err = config.NewRedisDB(
-	os.Getenv("REDIS_HOST"),
-	os.Getenv("REDIS_PORT"),
-	os.Getenv("REDIS_PASSWORD"))
+var redisService, err = config.NewRedisDB(configuration)
 var registrationController = NewRegistrationController(&registrationService, redisService.Auth, token)
 
 var app = createTestApp()

@@ -8,7 +8,6 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
 	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
-	"github.com/hibiken/asynq"
 	"log"
 	"os"
 	"os/signal"
@@ -17,44 +16,51 @@ import (
 func main() {
 	// setup configuration
 	configuration := config.New()
-	// setup database
-	database := config.NewMongoDatabase(configuration)
+
+	// setup database and token
+	mongoDatabase := config.NewMongoDatabase(configuration)
+	token := auth.NewToken()
+
+	// setup asynq client
+	asynqClient := config.NewAsynqClient(configuration)
+	defer asynqClient.Close()
+
 	// setup repository
-	registrationRepository := repository.NewRegistrationRepository(database)
+	registrationRepository := repository.NewRegistrationRepository(mongoDatabase)
 
-	// setup service
-	asyncRedisConnection := asynq.RedisClientOpt{
-		Addr: os.Getenv("REDIS_DSN"), // Redis server address
+	// setup services
+	redisService, err := config.NewRedisDB(configuration)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
-	client := asynq.NewClient(asyncRedisConnection)
-	defer client.Close()
-
-	registrationService := service.NewRegistrationService(&registrationRepository, client)
+	registrationService := service.NewRegistrationService(&registrationRepository, asynqClient)
 
 	// Setup controller
-	token := auth.NewToken()
-	redisService, err := config.NewRedisDB(
-		os.Getenv("REDIS_HOST"),
-		os.Getenv("REDIS_PORT"),
-		os.Getenv("REDIS_PASSWORD"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	registrationController := controller.NewRegistrationController(
 		&registrationService,
 		redisService.Auth,
 		token,
 	)
+
 	// Setup fiber
 	app := fiber.New()
+
 	// Setup middleware
 	middleware.FiberMiddleware(app)
+
 	// Setup Routing
 	registrationController.Route(app)
 
 	// StartServer
 	StartServer(app)
+}
+
+// StartServer func for starting a simple server.
+func StartServer(a *fiber.App) {
+	// Run server.
+	if err := a.Listen(os.Getenv("APP_PORT")); err != nil {
+		log.Printf("Oops... Server is not running! Reason: %v", err)
+	}
 }
 
 // StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
@@ -82,12 +88,4 @@ func StartServerWithGracefulShutdown(a *fiber.App) {
 	}
 
 	<-idleConnsClosed
-}
-
-// StartServer func for starting a simple server.
-func StartServer(a *fiber.App) {
-	// Run server.
-	if err := a.Listen(os.Getenv("APP_PORT")); err != nil {
-		log.Printf("Oops... Server is not running! Reason: %v", err)
-	}
 }

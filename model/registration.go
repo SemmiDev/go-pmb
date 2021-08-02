@@ -3,7 +3,7 @@ package model
 type Registration struct {
 	ID             string  `bson:"id"`
 	Name           string  `bson:"name"`
-	Email          string  `bson:"email"`
+	Email          string  `bson:"mailer"`
 	Phone          string  `bson:"phone"`
 	Username       string  `bson:"username"`
 	Password       string  `bson:"password"`

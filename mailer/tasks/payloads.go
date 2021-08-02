@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	// TypeWelcomeEmail is a name of the task type
-	// for sending a welcome email.
-	TypeWelcomeEmail = "email:welcome"
+	// TypeEmailRegister is a name of the task type
+	// for sending a register mailer.
+	TypeEmailRegister = "mailer:register"
 )
 
-type EmailWelcomePayload struct {
+type EmailRegisterPayload struct {
 	Username       string
 	Password       string
 	Email          string
@@ -20,10 +20,10 @@ type EmailWelcomePayload struct {
 	VirtualAccount string
 }
 
-// NewWelcomeEmailTask task payload for a new welcome email.
-func NewWelcomeEmailTask(username string, password string, email string, bill model.Bill, virtualAccount string) (*asynq.Task, error) {
+// NewRegisterEmail task payload for a new welcome mailer.
+func NewRegisterEmail(username string, password string, email string, bill model.Bill, virtualAccount string) (*asynq.Task, error) {
 	// Specify task payload.
-	welcomePayload := EmailWelcomePayload{
+	welcomePayload := EmailRegisterPayload{
 		Username:       username,
 		Password:       password,
 		Email:          email,
@@ -37,5 +37,5 @@ func NewWelcomeEmailTask(username string, password string, email string, bill mo
 	}
 
 	// Return a new task with given type and payload.
-	return asynq.NewTask(TypeWelcomeEmail, payload), nil
+	return asynq.NewTask(TypeEmailRegister, payload), nil
 }

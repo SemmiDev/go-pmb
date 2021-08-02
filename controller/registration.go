@@ -34,11 +34,11 @@ func (c *RegistrationController) Route(app *fiber.App) {
 	v1.Post("/auth/logout", c.Logout)
 	v1.Post("/auth/refresh", c.Refresh)
 
-	v1.Post("/registration", c.Create)
+	v1.Post("/registration", c.Register)
 	v1.Put("/registration/status", c.UpdateStatusBilling)
 }
 
-func (c *RegistrationController) Create(ctx *fiber.Ctx) error {
+func (c *RegistrationController) Register(ctx *fiber.Ctx) error {
 	var request model.RegistrationRequest
 
 	err := ctx.BodyParser(&request)
