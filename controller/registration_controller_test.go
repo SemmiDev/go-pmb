@@ -74,7 +74,7 @@ func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
 	assert.Equal(t, 400, webResponse.Code)
 	assert.Equal(t, "Bad Request", webResponse.Status)
 	assert.Equal(t, true, webResponse.Error)
-	assert.Equal(t, "mailer has been recorded", webResponse.ErrorMessage)
+	assert.Equal(t, "email has been recorded", webResponse.ErrorMessage)
 
 	jsonData, _ := json.Marshal(webResponse.Data)
 	createRegistrationResponse := model.RegistrationResponse{}

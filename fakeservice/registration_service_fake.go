@@ -1,8 +1,7 @@
-package service
+package fakeservice
 
 import (
 	"errors"
-	"github.com/SemmiDev/fiber-go-clean-arch/mailer"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/twinj/uuid"
@@ -10,15 +9,15 @@ import (
 	"time"
 )
 
+// without email support for controller test
+
 type service struct {
 	RegistrationRepository model.RegistrationRepository
-	Mailer                 mailer.MailService
 }
 
-func NewRegistrationService(registrationRepo *model.RegistrationRepository, mailService *mailer.MailService) model.RegistrationService {
+func NewRegistrationService(registrationRepo *model.RegistrationRepository) model.RegistrationService {
 	return &service{
 		RegistrationRepository: *registrationRepo,
-		Mailer:                 *mailService,
 	}
 }
 
@@ -79,11 +78,6 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		Bill:           register.Bill,
 	}
 
-	s.Mailer.SendEmail(model.RegistrationTemplate, &response)
-	if err != nil {
-		log.Printf("Service.SendEmail: %v", err.Error())
-		return nil, err
-	}
 	return &response, nil
 }
 

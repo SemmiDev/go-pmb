@@ -4,6 +4,7 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/auth"
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/controller"
+	"github.com/SemmiDev/fiber-go-clean-arch/mailer"
 	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
 	"github.com/SemmiDev/fiber-go-clean-arch/service"
@@ -21,19 +22,18 @@ func main() {
 	mongoDatabase := config.NewMongoDatabase(configuration)
 	token := auth.NewToken()
 
-	// setup asynq client
-	asynqClient := config.NewAsynqClient(configuration)
-	defer asynqClient.Close()
-
 	// setup repository
 	registrationRepository := repository.NewRegistrationRepository(mongoDatabase)
+
+	// setup mailer
+	mailer := mailer.NewMail(config.NewMailDialer(configuration))
 
 	// setup services
 	redisService, err := config.NewRedisDB(configuration)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	registrationService := service.NewRegistrationService(&registrationRepository, asynqClient)
+	registrationService := service.NewRegistrationService(&registrationRepository, &mailer)
 
 	// Setup controller
 	registrationController := controller.NewRegistrationController(

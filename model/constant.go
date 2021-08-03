@@ -11,3 +11,10 @@ const (
 	S1D3D4Bill Bill    = 152000
 	S2Bill     Bill    = 252000
 )
+
+type EmailTemplate int
+
+const (
+	RegistrationTemplate EmailTemplate = iota
+	ForgotPasswordTemplate
+)

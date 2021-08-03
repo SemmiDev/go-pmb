@@ -4,10 +4,10 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name":  "Sammi Aldhi Yanto",
+  "name":  "Sam",
   "email": "sammisolution@gmail.com",
-  "phone": "082387325971",
-  "program": "S1D3D4"
+  "phone": "082387325888",
+  "program": "S2"
 }
 
 ### REGISTER

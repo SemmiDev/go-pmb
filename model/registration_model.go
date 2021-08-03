@@ -8,6 +8,7 @@ type RegistrationRequest struct {
 }
 
 type RegistrationResponse struct {
+	Recipient      string `json:"-"`
 	Username       string `json:"username"`
 	Password       string `json:"password"`
 	Bill           Bill   `json:"bill"`

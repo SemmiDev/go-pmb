@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/auth"
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/fakeservice"
 	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
-	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,8 +20,7 @@ func createTestApp() *fiber.App {
 var configuration = config.New("../.env")
 var database = config.NewMongoDatabase(configuration)
 var registrationRepository = repository.NewRegistrationRepository(database)
-var asynq = config.NewAsynqClient(configuration)
-var registrationService = service.NewRegistrationService(&registrationRepository, asynq)
+var registrationService = fakeservice.NewRegistrationService(&registrationRepository)
 
 var token = auth.NewToken()
 var redisService, err = config.NewRedisDB(configuration)

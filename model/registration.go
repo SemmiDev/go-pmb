@@ -14,6 +14,10 @@ type Registration struct {
 	CreatedAt      string  `bson:"created_at"`
 }
 
+func NewRegistration(ID string, name string, email string, phone string, username string, password string, kind Program, bill Bill, virtualAccount string, status bool, createdAt string) *Registration {
+	return &Registration{ID: ID, Name: name, Email: email, Phone: phone, Username: username, Password: password, Kind: kind, Bill: bill, VirtualAccount: virtualAccount, Status: status, CreatedAt: createdAt}
+}
+
 func RegisterS1D3D4PrototypePrototype() *Registration {
 	return &Registration{
 		Kind:   S1D3D4,
