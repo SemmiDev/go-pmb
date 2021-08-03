@@ -12,11 +12,11 @@ type Mail struct {
 	MailConfig *config.MailConfig
 }
 
-type MailService interface {
+type Mailer interface {
 	SendEmail(template model.EmailTemplate, data interface{}) error
 }
 
-func NewMail(mailDialer *gomail.Dialer, mailConfig *config.MailConfig) MailService {
+func NewMail(mailDialer *gomail.Dialer, mailConfig *config.MailConfig) Mailer {
 	return &Mail{MailDialer: mailDialer, MailConfig: mailConfig}
 }
 

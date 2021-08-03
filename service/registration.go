@@ -12,7 +12,7 @@ import (
 
 type service struct {
 	RegistrationRepository model.RegistrationRepository
-	Mailer                 mailer.MailService
+	Mailer                 mailer.Mailer
 }
 
 func NewRegistrationService(registrationRepo *model.RegistrationRepository, mailService *mailer.MailService) model.RegistrationService {

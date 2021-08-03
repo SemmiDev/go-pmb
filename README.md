@@ -18,9 +18,6 @@
 - [JWT-Go](https://github.com/dgrijalva/jwt-go)
 *A Go  implementation of JSON Web Tokens.*
 
-- [Asynq](https://github.com/hibiken/asynq)
-*Simple, reliable & efficient distributed task queue in Go.*
-
 - [Docker](https://www.docker.com/)
 *Docker provides a simple and powerful developer experience, workflows and collaboration for creating applications.*
 
