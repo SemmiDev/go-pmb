@@ -58,6 +58,26 @@ func (t *Token) CreateToken(userid string) (*TokenDetails, error) {
 	return td, nil
 }
 
+func (t *Token) ExtractTokenMetadata(r *fiber.Ctx) (*AccessDetails, error) {
+	token, err := VerifyToken(r)
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		accessUuid, ok := claims["access_uuid"].(string)
+		if !ok {
+			return nil, err
+		}
+		userId := claims["user_id"].(string)
+		return &AccessDetails{
+			TokenUuid: accessUuid,
+			UserId:    userId,
+		}, nil
+	}
+	return nil, err
+}
+
 func TokenValid(r *fiber.Ctx) error {
 	token, err := VerifyToken(r)
 	if err != nil {
@@ -92,24 +112,4 @@ func ExtractToken(r *fiber.Ctx) string {
 		return strArr[1]
 	}
 	return ""
-}
-
-func (t *Token) ExtractTokenMetadata(r *fiber.Ctx) (*AccessDetails, error) {
-	token, err := VerifyToken(r)
-	if err != nil {
-		return nil, err
-	}
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok && token.Valid {
-		accessUuid, ok := claims["access_uuid"].(string)
-		if !ok {
-			return nil, err
-		}
-		userId := claims["user_id"].(string)
-		return &AccessDetails{
-			TokenUuid: accessUuid,
-			UserId:    userId,
-		}, nil
-	}
-	return nil, err
 }

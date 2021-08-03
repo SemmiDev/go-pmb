@@ -1,16 +1,6 @@
 version: '3.5'
 
 services:
-  clean-app:
-    container_name: clean-app
-    build: .
-    restart: on-failure
-    volumes:
-      - .:/usr/src/app
-    depends_on:
-      - clean-mongo
-    networks:
-      clean-arch
   clean-mongo:
     container_name: clean-mongo
     image: mongo:latest

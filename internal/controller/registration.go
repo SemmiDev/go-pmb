@@ -3,9 +3,9 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"github.com/SemmiDev/fiber-go-clean-arch/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/util"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/pkg/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"os"

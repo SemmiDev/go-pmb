@@ -2,8 +2,8 @@ package repository
 
 import (
 	"errors"
-	"github.com/SemmiDev/fiber-go-clean-arch/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"

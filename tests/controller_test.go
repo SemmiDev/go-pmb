@@ -1,11 +1,12 @@
-package controller
+package tests
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/fakeservice"
-	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
-	"github.com/SemmiDev/fiber-go-clean-arch/repository"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/controller"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/repository"
+	"github.com/SemmiDev/fiber-go-clean-arch/pkg/middleware"
+	"github.com/SemmiDev/fiber-go-clean-arch/tests/fakeservice"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -24,6 +25,6 @@ var registrationService = fakeservice.NewRegistrationService(&registrationReposi
 
 var token = auth.NewToken()
 var redisService, err = config.NewRedisDB(configuration)
-var registrationController = NewRegistrationController(&registrationService, redisService.Auth, token)
+var registrationController = controller.NewRegistrationController(&registrationService, redisService.Auth, token)
 
 var app = createTestApp()

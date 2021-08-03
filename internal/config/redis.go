@@ -1,12 +1,12 @@
 package config
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/auth"
+	auth2 "github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
 	"github.com/go-redis/redis/v8"
 )
 
 type RedisService struct {
-	Auth   auth.AuthInterface
+	Auth   auth2.AuthInterface
 	Client *redis.Client
 }
 
@@ -17,7 +17,7 @@ func NewRedisDB(configuration Config) (*RedisService, error) {
 		DB:       0,
 	})
 	return &RedisService{
-		Auth:   auth.NewAuth(redisClient),
+		Auth:   auth2.NewAuth(redisClient),
 		Client: redisClient,
 	}, nil
 }

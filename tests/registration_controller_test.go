@@ -1,9 +1,9 @@
-package controller
+package tests
 
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http/httptest"

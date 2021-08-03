@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/SemmiDev/fiber-go-clean-arch/mailer"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/util"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/mailer"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/pkg/util"
 	"github.com/twinj/uuid"
 	"log"
 	"time"
@@ -15,7 +15,7 @@ type service struct {
 	Mailer                 mailer.Mailer
 }
 
-func NewRegistrationService(registrationRepo *model.RegistrationRepository, mailService *mailer.MailService) model.RegistrationService {
+func NewRegistrationService(registrationRepo *model.RegistrationRepository, mailService *mailer.Mailer) model.RegistrationService {
 	return &service{
 		RegistrationRepository: *registrationRepo,
 		Mailer:                 *mailService,
