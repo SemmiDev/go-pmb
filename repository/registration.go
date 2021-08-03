@@ -2,8 +2,9 @@ package repository
 
 import (
 	"errors"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
@@ -15,13 +16,13 @@ type db struct {
 	Collection *mongo.Collection
 }
 
-func NewRegistrationRepository(database *mongo.Database) model.RegistrationRepository {
+func NewRegistrationRepository(database *mongo.Database) domain.RegistrationRepository {
 	return &db{
 		Collection: database.Collection(collectionName),
 	}
 }
 
-func (r *db) Insert(register *model.Registration) error {
+func (r *db) Insert(register *domain.Registration) error {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
@@ -35,11 +36,11 @@ func (r *db) Insert(register *model.Registration) error {
 	return nil
 }
 
-func (r *db) GetByVa(va *model.UpdateStatus) (*model.Registration, error) {
+func (r *db) GetByVa(va *model.UpdateStatus) (*domain.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account model.Registration
+	var account domain.Registration
 	err := r.Collection.FindOne(ctx, bson.M{"virtual_account": va.VirtualAccount}).Decode(&account)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
@@ -50,11 +51,11 @@ func (r *db) GetByVa(va *model.UpdateStatus) (*model.Registration, error) {
 	return &account, nil
 }
 
-func (r *db) GetByUsername(req *model.LoginRequest) (*model.Registration, error) {
+func (r *db) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account model.Registration
+	var account domain.Registration
 	err := r.Collection.FindOne(ctx, bson.M{"username": req.Username}).Decode(&account)
 	if err != nil {
 		return nil, err
@@ -62,11 +63,11 @@ func (r *db) GetByUsername(req *model.LoginRequest) (*model.Registration, error)
 	return &account, nil
 }
 
-func (r *db) GetByEmail(email string) (*model.Registration, error) {
+func (r *db) GetByEmail(email string) (*domain.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account model.Registration
+	var account domain.Registration
 	err := r.Collection.FindOne(ctx, bson.M{"mailer": email}).Decode(&account)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
@@ -77,11 +78,11 @@ func (r *db) GetByEmail(email string) (*model.Registration, error) {
 	return &account, nil
 }
 
-func (r *db) GetByPhone(phone string) (*model.Registration, error) {
+func (r *db) GetByPhone(phone string) (*domain.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account model.Registration
+	var account domain.Registration
 	err := r.Collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&account)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {

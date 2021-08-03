@@ -2,8 +2,10 @@ package fakeservice
 
 import (
 	"errors"
-	model2 "github.com/SemmiDev/fiber-go-clean-arch/internal/model"
-	util2 "github.com/SemmiDev/fiber-go-clean-arch/pkg/util"
+	"github.com/SemmiDev/fiber-go-clean-arch/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/twinj/uuid"
 	"log"
 	"time"
@@ -12,16 +14,16 @@ import (
 // without email support for controller test
 
 type service struct {
-	RegistrationRepository model2.RegistrationRepository
+	RegistrationRepository domain.RegistrationRepository
 }
 
-func NewRegistrationService(registrationRepo *model2.RegistrationRepository) model2.RegistrationService {
+func NewRegistrationService(registrationRepo *domain.RegistrationRepository) domain.RegistrationService {
 	return &service{
 		RegistrationRepository: *registrationRepo,
 	}
 }
 
-func (s *service) Create(request *model2.RegistrationRequest, program model2.Program) (*model2.RegistrationResponse, error) {
+func (s *service) Create(request *model.RegistrationRequest, program constant.Program) (*model.RegistrationResponse, error) {
 	// check mailer if already exists
 	respEmail, _ := s.RegistrationRepository.GetByEmail(request.Email)
 	if respEmail != nil {
@@ -36,21 +38,21 @@ func (s *service) Create(request *model2.RegistrationRequest, program model2.Pro
 
 	// prepare username, password, and generate va
 	username, password := uuid.NewV4().String(), uuid.NewV4().String()
-	passwordHash, err := util2.Hash(password)
+	passwordHash, err := util.Hash(password)
 	if err != nil {
 		log.Printf("Service.Hash: %v", err.Error())
 		return nil, err
 	}
-	va := util2.RandomVirtualAccount(request.Phone)
+	va := util.RandomVirtualAccount(request.Phone)
 
 	// define bill by program
-	var bill = model2.S1D3D4Bill
-	if program == model2.S2 {
-		bill = model2.S2Bill
+	var bill = constant.S1D3D4Bill
+	if program == constant.S2 {
+		bill = constant.S2Bill
 	}
 
 	// payload
-	var register = model2.NewRegistration(
+	var register = domain.NewRegistration(
 		uuid.NewV4().String(),
 		request.Name,
 		request.Email,
@@ -70,7 +72,7 @@ func (s *service) Create(request *model2.RegistrationRequest, program model2.Pro
 		return nil, err
 	}
 
-	response := model2.RegistrationResponse{
+	response := model.RegistrationResponse{
 		Recipient:      register.Email,
 		Username:       register.Username,
 		Password:       password,
@@ -81,7 +83,7 @@ func (s *service) Create(request *model2.RegistrationRequest, program model2.Pro
 	return &response, nil
 }
 
-func (s *service) GetByUsername(req *model2.LoginRequest) (*model2.Registration, error) {
+func (s *service) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
 	exists, err := s.RegistrationRepository.GetByUsername(req)
 	if err != nil {
 		return nil, err
@@ -89,7 +91,7 @@ func (s *service) GetByUsername(req *model2.LoginRequest) (*model2.Registration,
 	return exists, nil
 }
 
-func (s *service) UpdateStatusBilling(va *model2.UpdateStatus) error {
+func (s *service) UpdateStatusBilling(va *model.UpdateStatus) error {
 	exists, err := s.RegistrationRepository.GetByVa(va)
 	if err != nil {
 		return err

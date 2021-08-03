@@ -1,11 +1,11 @@
 package tests
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/controller"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/repository"
-	"github.com/SemmiDev/fiber-go-clean-arch/pkg/middleware"
+	"github.com/SemmiDev/fiber-go-clean-arch/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/controller"
+	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
+	"github.com/SemmiDev/fiber-go-clean-arch/repository"
 	"github.com/SemmiDev/fiber-go-clean-arch/tests/fakeservice"
 	"github.com/gofiber/fiber/v2"
 )

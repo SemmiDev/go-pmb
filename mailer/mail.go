@@ -2,8 +2,9 @@ package mailer
 
 import (
 	"fmt"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"gopkg.in/gomail.v2"
 )
 
@@ -13,7 +14,7 @@ type Mail struct {
 }
 
 type Mailer interface {
-	SendEmail(template model.EmailTemplate, data interface{}) error
+	SendEmail(template constant.EmailTemplate, data interface{}) error
 }
 
 func NewMail(mailDialer *gomail.Dialer, mailConfig *config.MailConfig) Mailer {
@@ -22,8 +23,8 @@ func NewMail(mailDialer *gomail.Dialer, mailConfig *config.MailConfig) Mailer {
 
 var mailer = gomail.NewMessage()
 
-func (m *Mail) SendEmail(template model.EmailTemplate, data interface{}) error {
-	if template == model.RegistrationTemplate {
+func (m *Mail) SendEmail(template constant.EmailTemplate, data interface{}) error {
+	if template == constant.RegistrationTemplate {
 		register := data.(*model.RegistrationResponse)
 
 		mailer.SetHeader("From", m.MailConfig.SenderName)

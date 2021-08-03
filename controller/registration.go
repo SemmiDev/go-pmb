@@ -3,22 +3,25 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/pkg/util"
+	"github.com/SemmiDev/fiber-go-clean-arch/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"os"
 )
 
 type RegistrationController struct {
-	RegistrationService model.RegistrationService
+	RegistrationService domain.RegistrationService
 	Auth                auth.AuthInterface
 	Token               auth.TokenInterface
 }
 
-func NewRegistrationController(registrationService *model.RegistrationService, auth auth.AuthInterface, token auth.TokenInterface,
-) RegistrationController {
+func NewRegistrationController(
+	registrationService *domain.RegistrationService,
+	auth auth.AuthInterface, token auth.TokenInterface) RegistrationController {
 	return RegistrationController{
 		RegistrationService: *registrationService,
 		Auth:                auth,
@@ -33,7 +36,6 @@ func (c *RegistrationController) Route(app *fiber.App) {
 	v1.Post("/auth/login", c.Login)
 	v1.Post("/auth/logout", c.Logout)
 	v1.Post("/auth/refresh", c.Refresh)
-
 	v1.Post("/registration", c.Register)
 	v1.Put("/registration/status", c.UpdateStatusBilling)
 }
@@ -63,12 +65,12 @@ func (c *RegistrationController) Register(ctx *fiber.Ctx) error {
 		})
 	}
 
-	var program model.Program
+	var program constant.Program
 	switch request.Program {
 	case "S1D3D4":
-		program = model.S1D3D4
+		program = constant.S1D3D4
 	case "S2":
-		program = model.S2
+		program = constant.S2
 	default:
 		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse{
 			Code:   fiber.StatusBadRequest,

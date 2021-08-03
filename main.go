@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/controller"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/mailer"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/repository"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/service"
-	"github.com/SemmiDev/fiber-go-clean-arch/pkg/middleware"
+	auth2 "github.com/SemmiDev/fiber-go-clean-arch/auth"
+	config2 "github.com/SemmiDev/fiber-go-clean-arch/config"
+	controller2 "github.com/SemmiDev/fiber-go-clean-arch/controller"
+	mailer2 "github.com/SemmiDev/fiber-go-clean-arch/mailer"
+	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
+	repository2 "github.com/SemmiDev/fiber-go-clean-arch/repository"
+	service2 "github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
 	"log"
 	"os"
@@ -16,27 +16,27 @@ import (
 
 func main() {
 	// setup configuration
-	configuration := config.New()
+	configuration := config2.New()
 
 	// setup database and token
-	mongoDatabase := config.NewMongoDatabase(configuration)
-	token := auth.NewToken()
+	mongoDatabase := config2.NewMongoDatabase(configuration)
+	token := auth2.NewToken()
 
 	// setup repository
-	registrationRepository := repository.NewRegistrationRepository(mongoDatabase)
+	registrationRepository := repository2.NewRegistrationRepository(mongoDatabase)
 
 	// setup mailer
-	mailer := mailer.NewMail(config.NewMailDialer(configuration))
+	mailer := mailer2.NewMail(config2.NewMailDialer(configuration))
 
 	// setup services
-	redisService, err := config.NewRedisDB(configuration)
+	redisService, err := config2.NewRedisDB(configuration)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	registrationService := service.NewRegistrationService(&registrationRepository, &mailer)
+	registrationService := service2.NewRegistrationService(&registrationRepository, &mailer)
 
 	// Setup controller
-	registrationController := controller.NewRegistrationController(
+	registrationController := controller2.NewRegistrationController(
 		&registrationService,
 		redisService.Auth,
 		token,

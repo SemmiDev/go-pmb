@@ -2,27 +2,29 @@ package service
 
 import (
 	"errors"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/mailer"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/pkg/util"
+	"github.com/SemmiDev/fiber-go-clean-arch/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/mailer"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/twinj/uuid"
 	"log"
 	"time"
 )
 
 type service struct {
-	RegistrationRepository model.RegistrationRepository
+	RegistrationRepository domain.RegistrationRepository
 	Mailer                 mailer.Mailer
 }
 
-func NewRegistrationService(registrationRepo *model.RegistrationRepository, mailService *mailer.Mailer) model.RegistrationService {
+func NewRegistrationService(registrationRepo *domain.RegistrationRepository, mailService *mailer.Mailer) domain.RegistrationService {
 	return &service{
 		RegistrationRepository: *registrationRepo,
 		Mailer:                 *mailService,
 	}
 }
 
-func (s *service) Create(request *model.RegistrationRequest, program model.Program) (*model.RegistrationResponse, error) {
+func (s *service) Create(request *model.RegistrationRequest, program constant.Program) (*model.RegistrationResponse, error) {
 	// check mailer if already exists
 	respEmail, _ := s.RegistrationRepository.GetByEmail(request.Email)
 	if respEmail != nil {
@@ -45,13 +47,13 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	va := util.RandomVirtualAccount(request.Phone)
 
 	// define bill by program
-	var bill = model.S1D3D4Bill
-	if program == model.S2 {
-		bill = model.S2Bill
+	var bill = constant.S1D3D4Bill
+	if program == constant.S2 {
+		bill = constant.S2Bill
 	}
 
 	// payload
-	var register = model.NewRegistration(
+	var register = domain.NewRegistration(
 		uuid.NewV4().String(),
 		request.Name,
 		request.Email,
@@ -79,7 +81,7 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 		Bill:           register.Bill,
 	}
 
-	s.Mailer.SendEmail(model.RegistrationTemplate, &response)
+	s.Mailer.SendEmail(constant.RegistrationTemplate, &response)
 	if err != nil {
 		log.Printf("Service.SendEmail: %v", err.Error())
 		return nil, err
@@ -87,7 +89,7 @@ func (s *service) Create(request *model.RegistrationRequest, program model.Progr
 	return &response, nil
 }
 
-func (s *service) GetByUsername(req *model.LoginRequest) (*model.Registration, error) {
+func (s *service) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
 	exists, err := s.RegistrationRepository.GetByUsername(req)
 	if err != nil {
 		return nil, err

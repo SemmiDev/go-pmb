@@ -8,12 +8,13 @@ import (
 )
 
 var (
-	emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	phoneRegexp = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
+	errorCollections = make(map[string]string)
+	emailRegexp      = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	phoneRegexp      = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
 )
 
 func (r *RegistrationRequest) Validate() map[string]string {
-	var errorCollections = make(map[string]string)
+	errorCollections = make(map[string]string)
 
 	r.Name = html.EscapeString(strings.TrimSpace(r.Name))
 	r.Email = html.EscapeString(strings.TrimSpace(r.Email))
@@ -52,8 +53,7 @@ func (r *RegistrationRequest) Validate() map[string]string {
 }
 
 func (u *UpdateStatus) Validate() map[string]string {
-	var errorCollections = make(map[string]string)
-
+	errorCollections = make(map[string]string)
 	if fmt.Sprint(u.VirtualAccount) == "" {
 		errorCollections["Required_VA"] = "Virtual Account Is Empty"
 	}
@@ -64,7 +64,7 @@ func (u *UpdateStatus) Validate() map[string]string {
 }
 
 func (r *LoginRequest) Validate() map[string]string {
-	var errorCollections = make(map[string]string)
+	errorCollections = make(map[string]string)
 
 	if fmt.Sprint(r.Username) == "" {
 		errorCollections["Required_Username"] = "Username Is Empty"

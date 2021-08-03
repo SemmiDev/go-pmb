@@ -3,7 +3,8 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http/httptest"
@@ -40,8 +41,8 @@ func TestRegistrationController_Create(t *testing.T) {
 	json.Unmarshal(jsonData, &createRegistrationResponse)
 	assert.NotNil(t, createRegistrationResponse.Username)
 	assert.NotNil(t, createRegistrationResponse.Password)
-	assert.Equal(t, model.S2Bill, createRegistrationResponse.Bill)
-	assert.NotEqual(t, model.S1D3D4Bill, createRegistrationResponse.Bill)
+	assert.Equal(t, constant.S2Bill, createRegistrationResponse.Bill)
+	assert.NotEqual(t, constant.S1D3D4Bill, createRegistrationResponse.Bill)
 }
 
 func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
@@ -51,7 +52,7 @@ func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
 		Email: "sammidev@gmail.com",
 		Phone: "082387325971",
 	}
-	registrationService.Create(&createRegistrationRequest, model.S2)
+	registrationService.Create(&createRegistrationRequest, constant.S2)
 
 	createRegistrationRequest2 := model.RegistrationRequest{
 		Name:    "Sammi Aldhi Yanto",
@@ -92,7 +93,7 @@ func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
 		Email: "sammidev@gmail.com",
 		Phone: "082387325971",
 	}
-	registrationService.Create(&createRegistrationRequest, model.S2)
+	registrationService.Create(&createRegistrationRequest, constant.S2)
 
 	createRegistrationRequest2 := model.RegistrationRequest{
 		Name:    "Sammi Aldhi Yanto",
@@ -330,7 +331,7 @@ func TestRegistrationController_UpdateSuccess(t *testing.T) {
 		Phone:   "082387325971",
 		Program: "S2",
 	}
-	temp, _ := registrationService.Create(&createRegistrationRequest, model.S2)
+	temp, _ := registrationService.Create(&createRegistrationRequest, constant.S2)
 
 	updateStatusRequest := model.UpdateStatus{
 		VirtualAccount: temp.VirtualAccount,
@@ -362,7 +363,7 @@ func TestRegistrationController_UpdateFailedEmptyVA(t *testing.T) {
 		Phone:   "082387325971",
 		Program: "S2",
 	}
-	registrationService.Create(&createRegistrationRequest, model.S2)
+	registrationService.Create(&createRegistrationRequest, constant.S2)
 
 	updateStatusRequest := model.UpdateStatus{
 		VirtualAccount: "",
