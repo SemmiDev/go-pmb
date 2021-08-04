@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/tests/fake"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
+	"log"
 	"net/http/httptest"
 	"testing"
 )
@@ -72,10 +74,12 @@ func TestRegistrationController_CreateFailedEmailIsExists(t *testing.T) {
 
 	webResponse := model.WebResponse{}
 	json.Unmarshal(responseBody, &webResponse)
+
+	log.Println(fake.Error)
 	assert.Equal(t, 400, webResponse.Code)
 	assert.Equal(t, "Bad Request", webResponse.Status)
 	assert.Equal(t, true, webResponse.Error)
-	assert.Equal(t, "email has been recorded", webResponse.ErrorMessage)
+	assert.NotNil(t, webResponse.ErrorMessage)
 
 	jsonData, _ := json.Marshal(webResponse.Data)
 	createRegistrationResponse := model.RegistrationResponse{}
@@ -116,7 +120,7 @@ func TestRegistrationController_CreateFailedPhoneIsExists(t *testing.T) {
 	assert.Equal(t, 400, webResponse.Code)
 	assert.Equal(t, "Bad Request", webResponse.Status)
 	assert.Equal(t, true, webResponse.Error)
-	assert.Equal(t, "phone has been recorded", webResponse.ErrorMessage)
+	assert.NotNil(t, webResponse.ErrorMessage)
 
 	jsonData, _ := json.Marshal(webResponse.Data)
 	createRegistrationResponse := model.RegistrationResponse{}
@@ -324,6 +328,7 @@ func TestRegistrationController_CreateFailedProgramNotRecognize(t *testing.T) {
 }
 
 func TestRegistrationController_UpdateSuccess(t *testing.T) {
+	fake.Error = nil
 	registrationRepository.DeleteAll()
 	createRegistrationRequest := model.RegistrationRequest{
 		Name:    "Sammi Aldhi Yanto",

@@ -1,11 +1,10 @@
-package repository
+package fake
 
 import (
 	"errors"
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/domain"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
@@ -76,7 +75,7 @@ func (r *db) GetByEmail(wg *sync.WaitGroup, email string) {
 	_ = r.Collection.FindOne(ctx, bson.M{"mailer": email}).Decode(&account)
 	if account.Username != "" {
 		zap.S().Error(errors.New("email was recorded"))
-		service.Error = errors.New("email was recorded")
+		Error = errors.New("email was recorded")
 	}
 }
 
@@ -90,7 +89,7 @@ func (r *db) GetByPhone(wg *sync.WaitGroup, phone string) {
 	_ = r.Collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&account)
 	if account.Username != "" {
 		zap.S().Error(errors.New("phone was recorded"))
-		service.Error = errors.New("phone was recorded")
+		Error = errors.New("phone was recorded")
 	}
 }
 

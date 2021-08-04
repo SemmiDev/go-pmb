@@ -3,6 +3,7 @@ package domain
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"sync"
 )
 
 type Registration struct {
@@ -42,8 +43,8 @@ func RegisterS2PrototypePrototype() *Registration {
 type RegistrationRepository interface {
 	Insert(register *Registration) error
 	GetByVa(va *model.UpdateStatus) (*Registration, error)
-	GetByEmail(email string) (*Registration, error)
-	GetByPhone(phone string) (*Registration, error)
+	GetByEmail(wg *sync.WaitGroup, email string)
+	GetByPhone(wg *sync.WaitGroup, phone string)
 	GetByUsername(username *model.LoginRequest) (*Registration, error)
 	UpdateStatus(va string) error
 	DeleteAll()

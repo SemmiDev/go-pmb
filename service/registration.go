@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
 	"github.com/SemmiDev/fiber-go-clean-arch/domain"
 	"github.com/SemmiDev/fiber-go-clean-arch/mailer"
@@ -9,6 +8,7 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/twinj/uuid"
 	"go.uber.org/zap"
+	"sync"
 	"time"
 )
 
@@ -24,19 +24,20 @@ func NewRegistrationService(registrationRepo *domain.RegistrationRepository, mai
 	}
 }
 
-func (s *service) Create(request *model.RegistrationRequest, program constant.Program) (*model.RegistrationResponse, error) {
-	// check mailer if already exists
-	respEmail, _ := s.RegistrationRepository.GetByEmail(request.Email)
-	if respEmail != nil {
-		zap.S().Error("email has been recorded")
-		return nil, errors.New("email has been recorded")
-	}
+var Error error
 
-	// check phone number if already exists
-	respPhone, _ := s.RegistrationRepository.GetByPhone(request.Phone)
-	if respPhone != nil {
-		zap.S().Error("phone has been recorded")
-		return nil, errors.New("phone has been recorded")
+func (s *service) Create(request *model.RegistrationRequest, program constant.Program) (*model.RegistrationResponse, error) {
+	// make sure when a new request is coming, set Errors to nil
+	Error = nil
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go s.RegistrationRepository.GetByEmail(&wg, request.Email)
+	go s.RegistrationRepository.GetByPhone(&wg, request.Phone)
+	wg.Wait()
+
+	if Error != nil {
+		return nil, Error
 	}
 
 	// prepare username, password, and generate va

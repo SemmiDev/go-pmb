@@ -1,3 +1,90 @@
 Wednesday, 04-Aug-21 06:52:24 UTC	[31mERROR[0m	repository/registration.go:74	mongo: no documents in result
 Wednesday, 04-Aug-21 06:52:24 UTC	[31mERROR[0m	repository/registration.go:89	mongo: no documents in result
 Wednesday, 04-Aug-21 06:52:24 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:28:12 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:28:32 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:28:34 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:28:52 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:28:57 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:28:59 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:29:07 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:30:03 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:30:05 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:31:14 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:31:15 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:31:20 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:32:55 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:33:04 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:33:11 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:33:13 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:33:28 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:33:30 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:34:14 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:34:23 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:34:57 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:35:27 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:35:29 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:35:30 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:35:32 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:35:33 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 11:48:29 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:48:29 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:48:33 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:48:33 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:50:31 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:50:31 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:50:33 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:50:33 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:50:35 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:50:35 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:50:37 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:50:37 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:50:49 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:50:49 UTC	[31mERROR[0m	repository/registration.go:77	mongo: no documents in result
+Wednesday, 04-Aug-21 11:50:49 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:53:12 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:53:12 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:53:17 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:53:17 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:53:18 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:53:18 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:53:19 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:53:19 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:53:26 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:53:26 UTC	[31mERROR[0m	repository/registration.go:77	mongo: no documents in result
+Wednesday, 04-Aug-21 11:53:26 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:53:32 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:53:32 UTC	[31mERROR[0m	repository/registration.go:98	email was recorded
+Wednesday, 04-Aug-21 11:53:32 UTC	[31mERROR[0m	repository/registration.go:77	mongo: no documents in result
+Wednesday, 04-Aug-21 11:53:32 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:23 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:23 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:54:29 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:54:29 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:54:29 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:38 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:54:38 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:54:38 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:39 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:39 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:54:39 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:54:41 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:41 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:54:41 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:54:42 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 11:54:42 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:54:42 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:56:19 UTC	[31mERROR[0m	repository/registration.go:94	mongo: no documents in result
+Wednesday, 04-Aug-21 11:56:19 UTC	[31mERROR[0m	repository/registration.go:98	phone was recorded
+Wednesday, 04-Aug-21 11:56:19 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 12:04:50 UTC	[31mERROR[0m	repository/registration.go:78	email was recorded
+Wednesday, 04-Aug-21 12:04:55 UTC	[31mERROR[0m	repository/registration.go:78	email was recorded
+Wednesday, 04-Aug-21 12:05:00 UTC	[31mERROR[0m	repository/registration.go:78	email was recorded
+Wednesday, 04-Aug-21 12:06:05 UTC	[31mERROR[0m	repository/registration.go:81	email was recorded
+Wednesday, 04-Aug-21 12:06:44 UTC	[31mERROR[0m	repository/registration.go:92	phone was recorded
+Wednesday, 04-Aug-21 12:06:51 UTC	[31mERROR[0m	repository/registration.go:92	phone was recorded
+Wednesday, 04-Aug-21 12:06:55 UTC	[31mERROR[0m	repository/registration.go:92	phone was recorded
+Wednesday, 04-Aug-21 12:07:19 UTC	[31mERROR[0m	mailer/mail.go:47	dial tcp: lookup smtp.gmail.com: no such host
+Wednesday, 04-Aug-21 12:07:22 UTC	[31mERROR[0m	repository/registration.go:92	phone was recorded
+Wednesday, 04-Aug-21 12:07:22 UTC	[31mERROR[0m	repository/registration.go:78	email was recorded
+Wednesday, 04-Aug-21 12:07:30 UTC	[31mERROR[0m	repository/registration.go:92	phone was recorded

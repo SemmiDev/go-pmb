@@ -1,17 +1,15 @@
-package fakeservice
+package fake
 
 import (
-	"errors"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
 	"github.com/SemmiDev/fiber-go-clean-arch/domain"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/twinj/uuid"
-	"log"
+	"go.uber.org/zap"
+	"sync"
 	"time"
 )
-
-// without email support for controller test
 
 type service struct {
 	RegistrationRepository domain.RegistrationRepository
@@ -23,24 +21,26 @@ func NewRegistrationService(registrationRepo *domain.RegistrationRepository) dom
 	}
 }
 
-func (s *service) Create(request *model.RegistrationRequest, program constant.Program) (*model.RegistrationResponse, error) {
-	// check mailer if already exists
-	respEmail, _ := s.RegistrationRepository.GetByEmail(request.Email)
-	if respEmail != nil {
-		return nil, errors.New("email has been recorded")
-	}
+var Error error
 
-	// check phone number if already exists
-	respPhone, _ := s.RegistrationRepository.GetByPhone(request.Phone)
-	if respPhone != nil {
-		return nil, errors.New("phone has been recorded")
+func (s *service) Create(request *model.RegistrationRequest, program constant.Program) (*model.RegistrationResponse, error) {
+	// make sure when a new request is coming, set Errors to nil
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go s.RegistrationRepository.GetByEmail(&wg, request.Email)
+	go s.RegistrationRepository.GetByPhone(&wg, request.Phone)
+	wg.Wait()
+
+	if Error != nil {
+		return nil, Error
 	}
 
 	// prepare username, password, and generate va
 	username, password := uuid.NewV4().String(), uuid.NewV4().String()
 	passwordHash, err := util.Hash(password)
 	if err != nil {
-		log.Printf("Service.Hash: %v", err.Error())
+		zap.S().Error(err.Error())
 		return nil, err
 	}
 	va := util.RandomVirtualAccount(request.Phone)
@@ -68,7 +68,7 @@ func (s *service) Create(request *model.RegistrationRequest, program constant.Pr
 
 	err = s.RegistrationRepository.Insert(register)
 	if err != nil {
-		log.Printf("Service.Create: %v", err.Error())
+		zap.S().Error(err.Error())
 		return nil, err
 	}
 
@@ -86,6 +86,7 @@ func (s *service) Create(request *model.RegistrationRequest, program constant.Pr
 func (s *service) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
 	exists, err := s.RegistrationRepository.GetByUsername(req)
 	if err != nil {
+		zap.S().Error(err.Error())
 		return nil, err
 	}
 	return exists, nil
@@ -94,11 +95,12 @@ func (s *service) GetByUsername(req *model.LoginRequest) (*domain.Registration, 
 func (s *service) UpdateStatusBilling(va *model.UpdateStatus) error {
 	exists, err := s.RegistrationRepository.GetByVa(va)
 	if err != nil {
+		zap.S().Error(err.Error())
 		return err
 	}
 	err = s.RegistrationRepository.UpdateStatus(exists.VirtualAccount)
 	if err != nil {
-		log.Printf("Service.UpdateStatusBilling: %v \n", err.Error())
+		zap.S().Error(err.Error())
 		return err
 	}
 	return nil
