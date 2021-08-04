@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -47,10 +48,12 @@ func (tk *ClientData) CreateAuth(c context.Context, userid string, td *TokenDeta
 
 	atCreated, err := tk.client.Set(c, td.TokenUuid, userid, at.Sub(now)).Result()
 	if err != nil {
+		zap.S().Error(err.Error())
 		return err
 	}
 	rtCreated, err := tk.client.Set(c, td.RefreshUuid, userid, rt.Sub(now)).Result()
 	if err != nil {
+		zap.S().Error(err.Error())
 		return err
 	}
 
@@ -64,6 +67,7 @@ func (tk *ClientData) CreateAuth(c context.Context, userid string, td *TokenDeta
 func (tk *ClientData) FetchAuth(c context.Context, tokenUuid string) (string, error) {
 	userid, err := tk.client.Get(c, tokenUuid).Result()
 	if err != nil {
+		zap.S().Error(err.Error())
 		return "", err
 	}
 	return userid, nil
@@ -76,15 +80,18 @@ func (tk *ClientData) DeleteTokens(c context.Context, authD *AccessDetails) erro
 	//delete access token
 	deletedAt, err := tk.client.Del(c, authD.TokenUuid).Result()
 	if err != nil {
+		zap.S().Error(err.Error())
 		return err
 	}
 	//delete refresh token
 	deletedRt, err := tk.client.Del(c, refreshUuid).Result()
 	if err != nil {
+		zap.S().Error(err.Error())
 		return err
 	}
 	//When the record is deleted, the return value is 1
 	if deletedAt != 1 || deletedRt != 1 {
+		zap.S().Error("something went wrong")
 		return errors.New("something went wrong")
 	}
 	return nil
@@ -94,6 +101,7 @@ func (tk *ClientData) DeleteRefresh(c context.Context, refreshUuid string) error
 	//delete refresh token
 	deleted, err := tk.client.Del(c, refreshUuid).Result()
 	if err != nil || deleted == 0 {
+		zap.S().Error(err.Error())
 		return err
 	}
 	return nil

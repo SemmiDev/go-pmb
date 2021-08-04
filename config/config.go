@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 	"log"
 	"os"
 )
@@ -19,6 +20,7 @@ func (config *configImpl) Get(key string) string {
 func New(filenames ...string) Config {
 	err := godotenv.Load(filenames...)
 	if err != nil {
+		zap.S().Fatal(err.Error())
 		log.Fatalf("config.New: %v", err.Error())
 	}
 	return &configImpl{}

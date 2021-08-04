@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.uber.org/zap"
 	"log"
 	"strconv"
 	"time"
@@ -15,16 +16,19 @@ func NewMongoDatabase(configuration Config) *mongo.Database {
 
 	mongoPoolMin, err := strconv.Atoi(configuration.Get("MONGO_POOL_MIN"))
 	if err != nil {
+		zap.S().Error(err.Error())
 		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
 	}
 
 	mongoPoolMax, err := strconv.Atoi(configuration.Get("MONGO_POOL_MAX"))
 	if err != nil {
+		zap.S().Error(err.Error())
 		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
 	}
 
 	mongoMaxIdleTime, err := strconv.Atoi(configuration.Get("MONGO_MAX_IDLE_TIME_SECOND"))
 	if err != nil {
+		zap.S().Error(err.Error())
 		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
 	}
 
@@ -35,11 +39,13 @@ func NewMongoDatabase(configuration Config) *mongo.Database {
 
 	client, err := mongo.NewClient(option)
 	if err != nil {
+		zap.S().Error(err.Error())
 		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
 	}
 
 	err = client.Connect(ctx)
 	if err != nil {
+		zap.S().Error(err.Error())
 		log.Fatalf("config.NewMongoDatabase: %v", err.Error())
 	}
 

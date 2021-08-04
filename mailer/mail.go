@@ -5,6 +5,7 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
 )
 
@@ -43,6 +44,7 @@ func (m *Mail) SendEmail(template constant.EmailTemplate, data interface{}) erro
 
 	err := m.MailDialer.DialAndSend(mailer)
 	if err != nil {
+		zap.S().Error(err.Error())
 		return err
 	}
 	return nil

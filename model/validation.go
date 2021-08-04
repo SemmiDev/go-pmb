@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"html"
 	"regexp"
 	"strings"
@@ -47,6 +48,7 @@ func (r *RegistrationRequest) Validate() map[string]string {
 	}
 
 	if len(errorCollections) > 0 {
+		zap.S().Error(errorCollections)
 		return errorCollections
 	}
 	return nil
@@ -58,6 +60,7 @@ func (u *UpdateStatus) Validate() map[string]string {
 		errorCollections["Required_VA"] = "Virtual Account Is Empty"
 	}
 	if len(errorCollections) > 0 {
+		zap.S().Error(errorCollections)
 		return errorCollections
 	}
 	return nil
@@ -75,6 +78,7 @@ func (r *LoginRequest) Validate() map[string]string {
 	}
 
 	if len(errorCollections) > 0 {
+		zap.S().Error(errorCollections)
 		return errorCollections
 	}
 	return nil
