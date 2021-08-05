@@ -1,4 +1,4 @@
-package domain
+package entity
 
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"

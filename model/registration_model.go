@@ -13,7 +13,7 @@ type (
 	}
 
 	RegistrationResponse struct {
-		Recipient      string        `json:"-"`
+		Recipient      string        `json:"recipient"`
 		Username       string        `json:"username"`
 		Password       string        `json:"password"`
 		Bill           constant.Bill `json:"bill"`

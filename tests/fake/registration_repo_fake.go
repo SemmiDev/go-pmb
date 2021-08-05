@@ -3,7 +3,7 @@ package fake
 import (
 	"errors"
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,13 +17,13 @@ type db struct {
 	Collection *mongo.Collection
 }
 
-func NewRegistrationRepository(database *mongo.Database) domain.RegistrationRepository {
+func NewRegistrationRepository(database *mongo.Database) entity.RegistrationRepository {
 	return &db{
 		Collection: database.Collection(collectionName),
 	}
 }
 
-func (r *db) Insert(register *domain.Registration) error {
+func (r *db) Insert(register *entity.Registration) error {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
@@ -36,11 +36,11 @@ func (r *db) Insert(register *domain.Registration) error {
 	return nil
 }
 
-func (r *db) GetByVa(va *model.UpdateStatus) (*domain.Registration, error) {
+func (r *db) GetByVa(va *model.UpdateStatus) (*entity.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account domain.Registration
+	var account entity.Registration
 	err := r.Collection.FindOne(ctx, bson.M{"virtual_account": va.VirtualAccount}).Decode(&account)
 	if err != nil {
 		zap.S().Error(err.Error())
@@ -52,11 +52,11 @@ func (r *db) GetByVa(va *model.UpdateStatus) (*domain.Registration, error) {
 	return &account, nil
 }
 
-func (r *db) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
+func (r *db) GetByUsername(req *model.LoginRequest) (*entity.Registration, error) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account domain.Registration
+	var account entity.Registration
 	err := r.Collection.FindOne(ctx, bson.M{"username": req.Username}).Decode(&account)
 	if err != nil {
 		zap.S().Error(err.Error())
@@ -70,7 +70,7 @@ func (r *db) GetByEmail(wg *sync.WaitGroup, email string) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account domain.Registration
+	var account entity.Registration
 	// make sure not contains other error
 	_ = r.Collection.FindOne(ctx, bson.M{"mailer": email}).Decode(&account)
 	if account.Username != "" {
@@ -84,7 +84,7 @@ func (r *db) GetByPhone(wg *sync.WaitGroup, phone string) {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account domain.Registration
+	var account entity.Registration
 	// make sure not contains other error
 	_ = r.Collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&account)
 	if account.Username != "" {

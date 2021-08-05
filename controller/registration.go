@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/SemmiDev/fiber-go-clean-arch/auth"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
-	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/dgrijalva/jwt-go"
@@ -14,13 +14,13 @@ import (
 )
 
 type RegistrationController struct {
-	RegistrationService domain.RegistrationService
+	RegistrationService entity.RegistrationService
 	Auth                auth.AuthInterface
 	Token               auth.TokenInterface
 }
 
 func NewRegistrationController(
-	registrationService *domain.RegistrationService,
+	registrationService *entity.RegistrationService,
 	auth auth.AuthInterface, token auth.TokenInterface) RegistrationController {
 	return RegistrationController{
 		RegistrationService: *registrationService,

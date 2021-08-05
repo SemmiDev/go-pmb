@@ -2,7 +2,7 @@ package fake
 
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
-	"github.com/SemmiDev/fiber-go-clean-arch/domain"
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/twinj/uuid"
@@ -12,10 +12,10 @@ import (
 )
 
 type service struct {
-	RegistrationRepository domain.RegistrationRepository
+	RegistrationRepository entity.RegistrationRepository
 }
 
-func NewRegistrationService(registrationRepo *domain.RegistrationRepository) domain.RegistrationService {
+func NewRegistrationService(registrationRepo *entity.RegistrationRepository) entity.RegistrationService {
 	return &service{
 		RegistrationRepository: *registrationRepo,
 	}
@@ -52,7 +52,7 @@ func (s *service) Create(request *model.RegistrationRequest, program constant.Pr
 	}
 
 	// payload
-	var register = domain.NewRegistration(
+	var register = entity.NewRegistration(
 		uuid.NewV4().String(),
 		request.Name,
 		request.Email,
@@ -83,7 +83,7 @@ func (s *service) Create(request *model.RegistrationRequest, program constant.Pr
 	return &response, nil
 }
 
-func (s *service) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
+func (s *service) GetByUsername(req *model.LoginRequest) (*entity.Registration, error) {
 	exists, err := s.RegistrationRepository.GetByUsername(req)
 	if err != nil {
 		zap.S().Error(err.Error())

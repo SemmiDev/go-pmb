@@ -1,11 +1,13 @@
 package service
 
 import (
+	"encoding/json"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
-	"github.com/SemmiDev/fiber-go-clean-arch/domain"
-	"github.com/SemmiDev/fiber-go-clean-arch/mailer"
+	"github.com/SemmiDev/fiber-go-clean-arch/entity"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
 	"github.com/SemmiDev/fiber-go-clean-arch/util"
+	"github.com/gofiber/fiber/v2"
+	"github.com/streadway/amqp"
 	"github.com/twinj/uuid"
 	"go.uber.org/zap"
 	"sync"
@@ -13,14 +15,14 @@ import (
 )
 
 type service struct {
-	RegistrationRepository domain.RegistrationRepository
-	Mailer                 mailer.Mailer
+	RegistrationRepository entity.RegistrationRepository
+	MailBroker             *amqp.Channel
 }
 
-func NewRegistrationService(registrationRepo *domain.RegistrationRepository, mailService *mailer.Mailer) domain.RegistrationService {
+func NewRegistrationService(registrationRepo *entity.RegistrationRepository, mailBroker *amqp.Channel) entity.RegistrationService {
 	return &service{
 		RegistrationRepository: *registrationRepo,
-		Mailer:                 *mailService,
+		MailBroker:             mailBroker,
 	}
 }
 
@@ -56,7 +58,7 @@ func (s *service) Create(request *model.RegistrationRequest, program constant.Pr
 	}
 
 	// payload
-	var register = domain.NewRegistration(
+	var register = entity.NewRegistration(
 		uuid.NewV4().String(),
 		request.Name,
 		request.Email,
@@ -84,15 +86,31 @@ func (s *service) Create(request *model.RegistrationRequest, program constant.Pr
 		Bill:           register.Bill,
 	}
 
-	s.Mailer.SendEmail(constant.RegistrationTemplate, &response)
+	payload, err := json.Marshal(response)
 	if err != nil {
+		panic(err)
+	}
+
+	msg := amqp.Publishing{
+		ContentType: fiber.MIMEApplicationJSON,
+		Body:        payload,
+	}
+
+	if err = s.MailBroker.Publish(
+		"",
+		"QueueEmailServiceRegistration",
+		false,
+		false,
+		msg,
+	); err != nil {
 		zap.S().Error(err.Error())
 		return nil, err
 	}
+
 	return &response, nil
 }
 
-func (s *service) GetByUsername(req *model.LoginRequest) (*domain.Registration, error) {
+func (s *service) GetByUsername(req *model.LoginRequest) (*entity.Registration, error) {
 	exists, err := s.RegistrationRepository.GetByUsername(req)
 	if err != nil {
 		zap.S().Error(err.Error())

@@ -1,11 +1,22 @@
-version: '3.5'
+version: "3.3"
 
 services:
-  clean-mongo:
-    container_name: clean-mongo
-    image: mongo:latest
+
+  # Create service with RabbitMQ.
+  message-broker:
+    image: rabbitmq:3.9-alpine
+    container_name: clean-broker
     ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
+      - 5672:5672   # for sender and consumer connections
+      - 15672:15672 # for serve RabbitMQ GUI
+#    volumes:
+#      - ${HOME}/dev-rabbitmq/data/:/var/lib/rabbitmq
+#      - ${HOME}/dev-rabbitmq/log/:/var/log/rabbitmq
+    restart: always
+    networks:
+      - dev-network
+
+networks:
+  # Create a new Docker network.
+  dev-network:
+    driver: bridge
