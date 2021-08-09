@@ -2,13 +2,17 @@ package util
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
 	"time"
 )
 
-func RandomVirtualAccount(phone string) string {
-	time := time.Now().UnixNano()
-	split := strings.Split(fmt.Sprint(time), "")
-	va := strings.Join(split, "") + phone
-	return va
+func Random() (r string) {
+	rand.Seed(time.Now().UnixNano())
+	v := rand.Perm(9)
+	return arrayToString(v, "")
+}
+
+func arrayToString(a []int, delim string) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
 }

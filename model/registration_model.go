@@ -1,9 +1,5 @@
 package model
 
-import (
-	"github.com/SemmiDev/fiber-go-clean-arch/constant"
-)
-
 type (
 	RegistrationRequest struct {
 		Name    string `json:"name"`
@@ -13,19 +9,17 @@ type (
 	}
 
 	RegistrationResponse struct {
-		Recipient      string        `json:"recipient"`
-		Username       string        `json:"username"`
-		Password       string        `json:"password"`
-		Bill           constant.Bill `json:"bill"`
-		VirtualAccount string        `json:"virtual_account"`
+		Recipient  string `json:"recipient"`
+		Username   string `json:"username"`
+		Password   string `json:"password"`
+		Bill       string `json:"bill"`
+		PaymentURL string `bson:"payment_url"`
 	}
 
-	UpdateStatus struct {
-		VirtualAccount string `json:"virtual_account"`
-	}
-
-	LoginRequest struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+	UpdatePaymentStatus struct {
+		RegisterID    string `json:"register_id"`
+		PaymentStatus string `json:"payment_status"`
+		PaymentType   string `json:"payment_type"`
+		FraudStatus   string `json:"fraud_status"`
 	}
 )

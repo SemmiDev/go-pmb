@@ -1,4 +1,4 @@
-package main
+package logger
 
 import (
 	"fmt"
@@ -36,7 +36,7 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-func InitLogger() {
+func SetupLogger() {
 	createDirIfNotExists()
 	writeSync := getLogWriter()
 	encoder := getEncoder()

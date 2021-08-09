@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"go.uber.org/zap"
 	"html"
 	"regexp"
 	"strings"
@@ -25,7 +24,7 @@ func (r *RegistrationRequest) Validate() map[string]string {
 		errorCollections["Required_Name"] = "Name Is Empty"
 	}
 	if len(r.Name) > 100 {
-		errorCollections["Length_Name_Too_Long"] = "Length_Name_Too_Long"
+		errorCollections["Name_Too_Long"] = "Name Too Long"
 	}
 	if r.Email == "" {
 		errorCollections["Required_Email"] = "Email Is Empty"
@@ -38,29 +37,37 @@ func (r *RegistrationRequest) Validate() map[string]string {
 	}
 
 	if emailRegexp.MatchString(r.Email) == false {
-		errorCollections["invalid_Email"] = "Email Is Not Valid"
+		errorCollections["Invalid_Email"] = "Email Is Not Valid"
 	}
 	if phoneRegexp.MatchString(r.Phone) == false {
-		errorCollections["invalid_Phone"] = "Phone Number Is Not Valid"
+		errorCollections["Invalid_Phone"] = "Phone Number Is Not Valid"
 	}
 	if strings.HasPrefix(r.Phone, "08") == false {
-		errorCollections["invalid_Phone"] = "Phone Number Is Not Valid"
+		errorCollections["Invalid_Phone"] = "Phone Number Is Not Valid"
 	}
 
 	if len(errorCollections) > 0 {
-		zap.S().Error(errorCollections)
 		return errorCollections
 	}
 	return nil
 }
 
-func (u *UpdateStatus) Validate() map[string]string {
+func (u *UpdatePaymentStatus) Validate() map[string]string {
 	errorCollections = make(map[string]string)
-	if fmt.Sprint(u.VirtualAccount) == "" {
-		errorCollections["Required_VA"] = "Virtual Account Is Empty"
+
+	if u.RegisterID == "" {
+		errorCollections["Required_ID"] = "ID Is Empty"
+	}
+	if u.PaymentStatus == "" {
+		errorCollections["Required_PaymentStatus"] = "PaymentStatus Is Empty"
+	}
+	if u.FraudStatus == "" {
+		errorCollections["Required_FraudStatus"] = "FraudStatus Is Empty"
+	}
+	if u.PaymentType == "" {
+		errorCollections["Required_PaymentType"] = "PaymentType Is Empty"
 	}
 	if len(errorCollections) > 0 {
-		zap.S().Error(errorCollections)
 		return errorCollections
 	}
 	return nil
@@ -72,13 +79,11 @@ func (r *LoginRequest) Validate() map[string]string {
 	if fmt.Sprint(r.Username) == "" {
 		errorCollections["Required_Username"] = "Username Is Empty"
 	}
-
 	if fmt.Sprint(r.Password) == "" {
 		errorCollections["Required_Password"] = "Password Is Empty"
 	}
 
 	if len(errorCollections) > 0 {
-		zap.S().Error(errorCollections)
 		return errorCollections
 	}
 	return nil

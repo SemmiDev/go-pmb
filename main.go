@@ -4,7 +4,9 @@ import (
 	"github.com/SemmiDev/fiber-go-clean-arch/auth"
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/controller"
+	"github.com/SemmiDev/fiber-go-clean-arch/logger"
 	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
+	"github.com/SemmiDev/fiber-go-clean-arch/payment"
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
 	"github.com/SemmiDev/fiber-go-clean-arch/service"
 	"github.com/gofiber/fiber/v2"
@@ -15,14 +17,31 @@ import (
 )
 
 func main() {
+	// Setup fiber
+	app := fiber.New()
+
+	// Setup App
+	SetupApp(app)
+
+	// StartServer
+	StartServer(app)
+}
+
+// SetupApp setup many stuff.
+func SetupApp(app *fiber.App) {
+	// Setup middleware
+	middleware.FiberMiddleware(app)
+
 	// setup logger
-	InitLogger()
+	logger.SetupLogger()
 
 	// setup configuration
 	configuration := config.New()
 
-	// setup database and token
+	// setup database
 	mongoDatabase := config.NewMongoDatabase(configuration)
+
+	// setup token
 	token := auth.NewToken()
 
 	// setup repository
@@ -30,20 +49,14 @@ func main() {
 
 	// setup message broker
 	amqpServerURL := configuration.Get("AMQP_SERVER_URL")
-
-	// Create a new RabbitMQ connection.
 	connectRabbitMQ, err := amqp.Dial(amqpServerURL)
 	panicIfNeeded(err)
 	defer connectRabbitMQ.Close()
-
-	// Let's start by opening a channel to our RabbitMQ
-	// instance over the connection we have already
-	// established.
 	channelRabbitMQ, err := connectRabbitMQ.Channel()
 	panicIfNeeded(err)
 	defer channelRabbitMQ.Close()
 
-	// setup queue name
+	// setup queue name for rabbitMQ
 	_, err = channelRabbitMQ.QueueDeclare(
 		"QueueEmailServiceRegistration", // queue name
 		true,                            // durable
@@ -58,30 +71,29 @@ func main() {
 	redisService, err := config.NewRedisDB(configuration)
 	panicIfNeeded(err)
 
-	// setup service
-	registrationService := service.NewRegistrationService(&registrationRepository, channelRabbitMQ)
+	// setup midtrans client
+	midtransClient := config.NewMidtransClient(configuration)
 
-	// Setup controller
-	registrationController := controller.NewRegistrationController(
+	// setup midtrans service
+	midtransService := payment.NewService(midtransClient)
+
+	// setup registration service
+	registrationService := service.NewRegistrationService(&registrationRepository, channelRabbitMQ, midtransService)
+
+	// Setup controllers
+	registrationController := controller.NewRegistrationController(&registrationService)
+	authController := controller.NewAuthController(
 		&registrationService,
 		redisService.Auth,
 		token,
 	)
 
-	// Setup fiber
-	app := fiber.New()
-
-	// Setup middleware
-	middleware.FiberMiddleware(app)
-
 	// Setup Routing
 	registrationController.Route(app)
-
-	// StartServer
-	StartServer(app)
+	authController.Route(app)
 }
 
-// panicIfNeeded panic if err != nil
+// panicIfNeeded do panic if err != nil.
 func panicIfNeeded(err error) {
 	if err != nil {
 		panic(err)

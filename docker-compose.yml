@@ -5,7 +5,7 @@ services:
   # Create service with RabbitMQ.
   message-broker:
     image: rabbitmq:3.9-alpine
-    container_name: clean-broker
+    container_name: broker
     ports:
       - 5672:5672   # for sender and consumer connections
       - 15672:15672 # for serve RabbitMQ GUI
