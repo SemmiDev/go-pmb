@@ -2,14 +2,12 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/SemmiDev/fiber-go-clean-arch/constant"
 	"github.com/SemmiDev/fiber-go-clean-arch/entity"
+	"github.com/SemmiDev/fiber-go-clean-arch/helper"
 	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/payment"
 	"github.com/SemmiDev/fiber-go-clean-arch/repository"
-	"github.com/SemmiDev/fiber-go-clean-arch/util"
 	"github.com/gofiber/fiber/v2"
 	"github.com/streadway/amqp"
 	"github.com/twinj/uuid"
@@ -17,25 +15,25 @@ import (
 	"time"
 )
 
+type RegistrationService interface {
+	Register(m *model.RegistrationRequest) (*model.RegistrationResponse, error)
+	UpdatePaymentStatus(m *model.UpdatePaymentStatus) (string, error)
+	Login(m *model.LoginRequest) (*entity.Registration, error)
+}
+
 type registrationService struct {
 	RegistrationRepository repository.RegistrationRepository
 	MailBroker             *amqp.Channel
-	PaymentService         payment.Service
+	PaymentService         Service
 }
 
-func NewRegistrationService(rp *repository.RegistrationRepository, mb *amqp.Channel, ps payment.Service) RegistrationService {
+func NewRegistrationService(rp *repository.RegistrationRepository, mb *amqp.Channel, ps Service) RegistrationService {
 	return &registrationService{
 		RegistrationRepository: *rp,
 		MailBroker:             mb,
 		PaymentService:         ps,
 	}
 }
-
-var (
-	ErrEmail    = errors.New("e-mail has been registered")
-	ErrPhone    = errors.New("phone has been registered")
-	ErrNotFound = errors.New("ID not found")
-)
 
 func (r *registrationService) Register(register *model.RegistrationRequest) (*model.RegistrationResponse, error) {
 	// check email is already exists or not
@@ -50,9 +48,9 @@ func (r *registrationService) Register(register *model.RegistrationRequest) (*mo
 	}
 
 	// generate username & password
-	username, password := util.Random(), util.Random()
+	username, password := helper.Random(), helper.Random()
 	// hash password
-	passwordHash, err := util.Hash(password)
+	passwordHash, err := helper.Hash(password)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +79,7 @@ func (r *registrationService) Register(register *model.RegistrationRequest) (*mo
 	registerData.Code = code
 
 	// define payment
-	payment := payment.Payment{
+	payment := model.Payment{
 		ID:     registerData.ID,
 		Amount: registerData.Bill,
 	}
@@ -174,7 +172,7 @@ func (r *registrationService) Login(m *model.LoginRequest) (*entity.Registration
 		}
 	}
 
-	err := util.Check(m.Password, register.Password)
+	err := helper.Check(m.Password, register.Password)
 	if err != nil {
 		return nil, err
 	}

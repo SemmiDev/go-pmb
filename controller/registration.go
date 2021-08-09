@@ -18,6 +18,7 @@ func NewRegistrationController(registrationService *service.RegistrationService)
 
 func (c *RegistrationController) Route(app *fiber.App) {
 	v1 := app.Group("/api/v1")
+
 	v1.Post("/register", c.Register)
 	v1.Put("/register/payment/status", c.UpdatePaymentStatus)
 }

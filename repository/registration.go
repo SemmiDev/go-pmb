@@ -3,12 +3,22 @@ package repository
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/entity"
-	"github.com/SemmiDev/fiber-go-clean-arch/exception"
+	"github.com/SemmiDev/fiber-go-clean-arch/helper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
+
+type RegistrationRepository interface {
+	Insert(register *entity.Registration) error
+	GetByID(ID string) *entity.Registration
+	GetByUsername(username string) *entity.Registration
+	GetByEmail(email string) bool
+	GetByPhone(phone string) bool
+	UpdateStatus(ID string, status string) error
+	DeleteAll() error
+}
 
 type registrationDB struct {
 	Collection *mongo.Collection
@@ -89,7 +99,7 @@ func (r *registrationDB) UpdateStatus(ID string, status string) error {
 	}
 
 	_, err := r.Collection.UpdateOne(ctx, filter, update)
-	return exception.ErrorOrNil(err)
+	return helper.ErrorOrNil(err)
 }
 
 func (r *registrationDB) DeleteAll() error {
@@ -97,5 +107,5 @@ func (r *registrationDB) DeleteAll() error {
 	defer cancel()
 
 	_, err := r.Collection.DeleteMany(ctx, bson.M{})
-	return exception.ErrorOrNil(err)
+	return helper.ErrorOrNil(err)
 }

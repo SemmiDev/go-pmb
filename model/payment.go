@@ -1,4 +1,4 @@
-package payment
+package model
 
 import (
 	"github.com/leekchan/accounting"
