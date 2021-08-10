@@ -10,7 +10,7 @@ import (
 
 func createDirIfNotExists() {
 	path, _ := os.Getwd()
-	if _, err := os.Stat(fmt.Sprintf("%s/logs", path)); os.IsNotExist(err) {
+	if _, err := os.Stat(fmt.Sprintf("%s/log", path)); os.IsNotExist(err) {
 		_ = os.Mkdir("logs", os.ModePerm)
 	}
 }
@@ -20,7 +20,7 @@ func getLogWriter() zapcore.WriteSyncer {
 	if err != nil {
 		panic(err)
 	}
-	file, err := os.OpenFile(path+"/logs/LogApp.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(path+"/log/Logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(err)
 	}

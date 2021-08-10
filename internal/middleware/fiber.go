@@ -12,7 +12,7 @@ func FiberMiddleware(a *fiber.App) {
 		// Add CORS to each route.
 		cors.New(),
 		// Add simple logger.
-		logger.New(),
+		logger.New(logger.ConfigDefault),
 		// add recovered for panic
 		recover.New(),
 	)

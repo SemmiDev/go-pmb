@@ -20,6 +20,6 @@ require (
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.18.1
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
-	golang.org/x/sys v0.0.0-20210305230114-8fe3ee5dd75b // indirect
+	golang.org/x/tools v0.1.5 // indirect
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 )

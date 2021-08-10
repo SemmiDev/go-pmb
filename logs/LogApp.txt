@@ -1,7 +1,0 @@
-Monday, 09-Aug-21 10:15:55 UTC	[34mINFO[0m	fiber-go-clean-arch/main.go:27	sasasa
-Monday, 09-Aug-21 10:32:59 UTC	[31mERROR[0m	auth/auth.go:51	dial tcp 127.0.0.1:6379: connect: connection refused
-Monday, 09-Aug-21 10:33:41 UTC	[31mERROR[0m	auth/auth.go:51	dial tcp 127.0.0.1:6379: connect: connection refused
-Monday, 09-Aug-21 10:33:44 UTC	[31mERROR[0m	auth/auth.go:51	dial tcp 127.0.0.1:6379: connect: connection refused
-Monday, 09-Aug-21 10:33:46 UTC	[31mERROR[0m	auth/auth.go:51	dial tcp 127.0.0.1:6379: connect: connection refused
-Monday, 09-Aug-21 10:33:49 UTC	[31mERROR[0m	auth/auth.go:51	dial tcp 127.0.0.1:6379: connect: connection refused
-Monday, 09-Aug-21 10:33:52 UTC	[31mERROR[0m	auth/auth.go:51	dial tcp 127.0.0.1:6379: connect: connection refused

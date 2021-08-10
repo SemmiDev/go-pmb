@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/controllers"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/helper"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/middleware"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/repositories"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/services"
+	"github.com/SemmiDev/fiber-go-clean-arch/pkg/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/streadway/amqp"
 	"log"
@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	// Setup fiber.
+	// Create a new Fiber instance.
 	app := fiber.New()
 
 	// Setup app.
@@ -32,22 +32,22 @@ func SetupApp(app *fiber.App) {
 	// Setup middleware.
 	middleware.FiberMiddleware(app)
 
-	// setup logger.
+	// Setup logger.
 	helper.SetupLogger()
 
-	// setup configuration.
+	// Setup configuration.
 	configuration := config.New()
 
-	// setup database.
+	// Setup database.
 	mongoDatabase := config.NewMongoDatabase(configuration)
 
-	// setup token.
+	// Setup token.
 	token := auth.NewToken()
 
-	// setup repositories.
+	// Setup repositories.
 	registrationRepository := repositories.NewRegistrationRepository(mongoDatabase)
 
-	// setup message broker.
+	// Setup message broker.
 	amqpServerURL := configuration.Get("AMQP_SERVER_URL")
 	connectRabbitMQ, err := amqp.Dial(amqpServerURL)
 	helper.PanicIfNeeded(err)
@@ -58,26 +58,26 @@ func SetupApp(app *fiber.App) {
 
 	// setup queue name for rabbitMQ.
 	_, err = channelRabbitMQ.QueueDeclare(
-		"QueueEmailServiceRegistration", // queue name
-		true,                            // durable
-		false,                           // auto delete
-		false,                           // exclusive
-		false,                           // no wait
-		nil,                             // arguments
+		"QueueEmailServiceRegistration",
+		true,
+		false,
+		false,
+		false,
+		nil,
 	)
 	helper.PanicIfNeeded(err)
 
-	// setup redis.
+	// Setup redis.
 	redisService, err := config.NewRedisDB(configuration)
 	helper.PanicIfNeeded(err)
 
-	// setup midtrans client.
+	// Setup midtrans client.
 	midtransClient := config.NewMidtransClient(configuration)
 
-	// setup midtrans services.
+	// Setup midtrans services.
 	midtransService := services.NewService(midtransClient)
 
-	// setup registration services.
+	// Setup registration services.
 	registrationService := services.NewRegistrationService(&registrationRepository, channelRabbitMQ, midtransService)
 
 	// Setup controllers.
@@ -89,6 +89,11 @@ func SetupApp(app *fiber.App) {
 	)
 
 	// Setup routes.
+	app.Get("/api/v1/health", func(c *fiber.Ctx) error {
+		c.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
+		return c.Status(fiber.StatusOK).SendString("<b>i'm</b> healthy 👋!")
+	})
+
 	registrationController.Route(app)
 	authController.Route(app)
 }

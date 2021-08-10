@@ -1,9 +1,9 @@
 package repositories
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/entities"
 	"github.com/SemmiDev/fiber-go-clean-arch/internal/helper"
+	config2 "github.com/SemmiDev/fiber-go-clean-arch/pkg/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,7 +31,7 @@ func NewRegistrationRepository(database *mongo.Database) RegistrationRepository 
 }
 
 func (r *registrationDB) Insert(register *entities.Registration) error {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	_, err := r.Collection.InsertOne(ctx, register)
@@ -42,7 +42,7 @@ func (r *registrationDB) Insert(register *entities.Registration) error {
 }
 
 func (r *registrationDB) GetByID(ID string) *entities.Registration {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	var account entities.Registration
@@ -51,7 +51,7 @@ func (r *registrationDB) GetByID(ID string) *entities.Registration {
 }
 
 func (r *registrationDB) GetByUsername(username string) *entities.Registration {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	var account entities.Registration
@@ -61,7 +61,7 @@ func (r *registrationDB) GetByUsername(username string) *entities.Registration {
 }
 
 func (r *registrationDB) GetByEmail(email string) bool {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	var account entities.Registration
@@ -73,7 +73,7 @@ func (r *registrationDB) GetByEmail(email string) bool {
 }
 
 func (r *registrationDB) GetByPhone(phone string) bool {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	var account entities.Registration
@@ -85,7 +85,7 @@ func (r *registrationDB) GetByPhone(phone string) bool {
 }
 
 func (r *registrationDB) UpdateStatus(ID string, status string) error {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	filter := bson.M{
@@ -103,7 +103,7 @@ func (r *registrationDB) UpdateStatus(ID string, status string) error {
 }
 
 func (r *registrationDB) DeleteAll() error {
-	ctx, cancel := config.NewMongoContext()
+	ctx, cancel := config2.NewMongoContext()
 	defer cancel()
 
 	_, err := r.Collection.DeleteMany(ctx, bson.M{})

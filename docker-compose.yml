@@ -1,22 +1,72 @@
-version: "3.3"
-
-services:
-
-  # Create services with RabbitMQ.
-  message-broker:
-    image: rabbitmq:3.9-alpine
-    container_name: broker
-    ports:
-      - 5672:5672   # for sender and consumer connections
-      - 15672:15672 # for serve RabbitMQ GUI
+#version: '3'
+#
+#services:
+#  clean-app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9090:9090"
+#    environment:
+#      - APP_PORT=:9090
+#      - MONGO_URI=mongodb://mongo:mongo@golang-mongo:27017
+#      - MONGO_DATABASE=registrations
+#      - MONGO_POOL_MIN=10
+#      - MONGO_POOL_MAX=100
+#      - MONGO_MAX_IDLE_TIME_SECOND=60
+#      - REDIS_DSN=127.0.0.1:6379
+#      - REDIS_HOST=127.0.0.1
+#      - REDIS_PORT=6379
+#      - REDIS_PASSWORD=
+#      - ACCESS_SECRET=98hbun98h111secret
+#      - REFRESH_SECRET=786dfdbjhsb111secret
+#      - AMQP_SERVER_URL=amqp://guest:guest@broker:5672/
+#      - MIDTRANS_SERVER_KEY=XXX
+#      - MIDTRANS_CLIENT_KEY=XXX
+#    depends_on:
+#      - golang-mongo
+#      - message-broker
+#      - redis
+#    command: [ "/app/main" ]
+#    networks:
+#      - dev-network
+#      -
+#  golang-mongo:
+#    container_name: golang-mongo
+#    image: mongo:4.4
+#    ports:
+#      - 27017:27017
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: mongo
+#      MONGO_INITDB_ROOT_PASSWORD: mongo
+#
+#  redis:
+#    image: "redis:alpine"
+#    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+#    ports:
+#      - "6379:6379"
 #    volumes:
-#      - ${HOME}/dev-rabbitmq/data/:/var/lib/rabbitmq
-#      - ${HOME}/dev-rabbitmq/log/:/var/log/rabbitmq
-    restart: always
-    networks:
-      - dev-network
-
-networks:
-  # Create a new Docker network.
-  dev-network:
-    driver: bridge
+#      - $PWD/redis-data:/var/lib/redis
+#      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+#    environment:
+#      - REDIS_REPLICATION_MODE=master
+#    networks:
+#      - dev-network
+#      -
+#  message-broker:
+#    image: rabbitmq:3.9-alpine
+#    container_name: broker
+#    ports:
+#      - 5672:5672   # for sender and consumer connections
+#      - 15672:15672 # for serve RabbitMQ GUI
+##    volumes:
+##      - ${HOME}/dev-rabbitmq/data/:/var/lib/rabbitmq
+##      - ${HOME}/dev-rabbitmq/log/:/var/log/rabbitmq
+#    restart: always
+#    networks:
+#      - dev-network
+#
+#networks:
+#  # Create a new Docker network.
+#  dev-network:
+#    driver: bridge
