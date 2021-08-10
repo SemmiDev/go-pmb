@@ -1,9 +1,9 @@
 package models
 
 type Meta struct {
-	Message interface{} `json:"message"`
 	Code    int         `json:"code"`
 	Status  string      `json:"status"`
+	Message interface{} `json:"message"`
 }
 
 type Response struct {
@@ -14,9 +14,9 @@ type Response struct {
 func APIResponse(message interface{}, code int, status string, data interface{}) *Response {
 	return &Response{
 		Meta: &Meta{
-			Message: message,
 			Code:    code,
 			Status:  status,
+			Message: message,
 		},
 		Data: data,
 	}

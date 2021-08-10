@@ -7,7 +7,7 @@ const (
 	S1D3D4Bill int64 = 152000
 	S2Bill     int64 = 252000
 
-	PENDING string = "pending"
-	PAID    string = "paid"
-	CANCEL  string = "cancel"
+	PaymentStatusPending string = "pending"
+	PaymentStatusPaid    string = "paid"
+	PaymentStatusCancel  string = "cancel"
 )

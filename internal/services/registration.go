@@ -58,10 +58,7 @@ func (r *registrationService) Register(register *models.RegistrationRequest) (*m
 	}
 
 	// Define a registerData (default s1)
-	var registerData = entities.RegisterS1D3D4Prototype
-	if register.Program == constant.S2 {
-		registerData = entities.RegisterS2Prototype
-	}
+	var registerData = entities.RegisterFactory(register.Program)
 
 	// Assign other data
 	registerData.ID = uuid.NewV4().String()
@@ -124,11 +121,11 @@ func (r *registrationService) UpdatePaymentStatus(input *models.UpdatePaymentSta
 	}
 
 	if input.PaymentType == "credit_card" && input.PaymentStatus == "capture" && input.FraudStatus == "accept" {
-		register.Status = constant.PAID
+		register.Status = constant.PaymentStatusPaid
 	} else if input.PaymentStatus == "settlement" {
-		register.Status = constant.PAID
+		register.Status = constant.PaymentStatusPaid
 	} else if input.PaymentStatus == "deny" || input.PaymentStatus == "expire" || input.PaymentStatus == "cancel" {
-		register.Status = constant.CANCEL
+		register.Status = constant.PaymentStatusCancel
 	}
 
 	err := r.RegistrationRepository.UpdateStatus(register.ID, register.Status)
@@ -179,7 +176,7 @@ func (r *registrationService) Login(m *models.LoginRequest) (*entities.Registrat
 		return nil, err
 	}
 
-	if register.Status != constant.PAID {
+	if register.Status != constant.PaymentStatusPaid {
 		return nil, constant.ErrBillHasNotBeenPaid
 	}
 
