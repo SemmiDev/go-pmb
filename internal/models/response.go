@@ -1,4 +1,4 @@
-package model
+package models
 
 type Meta struct {
 	Message interface{} `json:"message"`

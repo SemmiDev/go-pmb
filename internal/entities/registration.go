@@ -1,7 +1,7 @@
-package entity
+package entities
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/constant"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

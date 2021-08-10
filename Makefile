@@ -1,4 +1,4 @@
 run-tests:
 	go test ./... -v
-run-app-server:
-	go run main.go
+run-app:
+	go run cmd/api/main.go

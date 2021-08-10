@@ -1,23 +1,23 @@
-package controller
+package controllers
 
 import (
 	"fmt"
-	"github.com/SemmiDev/fiber-go-clean-arch/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/service"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/models"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/services"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"os"
 )
 
 type LoginController struct {
-	RegistrationService service.RegistrationService
+	RegistrationService services.RegistrationService
 	Auth                auth.AuthInterface
 	Token               auth.TokenInterface
 }
 
 func NewAuthController(
-	registrationService *service.RegistrationService,
+	registrationService *services.RegistrationService,
 	auth auth.AuthInterface,
 	token auth.TokenInterface) LoginController {
 
@@ -37,41 +37,41 @@ func (c *LoginController) Route(app *fiber.App) {
 }
 
 func (c *LoginController) Login(ctx *fiber.Ctx) error {
-	var request model.LoginRequest
+	var request models.LoginRequest
 
 	err := ctx.BodyParser(&request)
 	if err != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).
-			JSON(model.APIResponse("Cannot unmarshal body", fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
+			JSON(models.APIResponse("Cannot unmarshal body", fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
 	}
 
 	errs := request.Validate()
 	if len(errs) > 0 {
 		return ctx.Status(fiber.StatusBadRequest).
-			JSON(model.APIResponse(errs, fiber.StatusBadRequest, "Bad Request", nil))
+			JSON(models.APIResponse(errs, fiber.StatusBadRequest, "Bad Request", nil))
 	}
 
 	user, err := c.RegistrationService.Login(&request)
 	if err != nil || user == nil {
 		return ctx.Status(fiber.StatusBadRequest).
-			JSON(model.APIResponse(err.Error(), fiber.StatusBadRequest, "Bad Request", nil))
+			JSON(models.APIResponse(err.Error(), fiber.StatusBadRequest, "Bad Request", nil))
 	}
 
 	ts, tErr := c.Token.CreateToken(user.ID)
 	if tErr != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).
-			JSON(model.APIResponse(tErr.Error(), fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
+			JSON(models.APIResponse(tErr.Error(), fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
 	}
 
 	saveErr := c.Auth.CreateAuth(ctx.Context(), user.ID, ts)
 	if saveErr != nil {
 		return ctx.Status(fiber.StatusInternalServerError).
-			JSON(model.APIResponse(saveErr.Error(), fiber.StatusInternalServerError, "Internal Server Error", nil))
+			JSON(models.APIResponse(saveErr.Error(), fiber.StatusInternalServerError, "Internal Server Error", nil))
 	}
 
-	response := model.NewLoginResponse(user.ID, user.Name, user.Username, ts.AccessToken, ts.RefreshToken)
+	response := models.NewLoginResponse(user.ID, user.Name, user.Username, ts.AccessToken, ts.RefreshToken)
 	return ctx.Status(fiber.StatusOK).
-		JSON(model.APIResponse(nil, fiber.StatusOK, "Ok", response))
+		JSON(models.APIResponse(nil, fiber.StatusOK, "Ok", response))
 }
 
 func (c *LoginController) Logout(ctx *fiber.Ctx) error {
@@ -79,18 +79,18 @@ func (c *LoginController) Logout(ctx *fiber.Ctx) error {
 	metadata, err := c.Token.ExtractTokenMetadata(ctx)
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).
-			JSON(model.APIResponse(err.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
+			JSON(models.APIResponse(err.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
 	}
 
 	//if the access token exist and it is still valid, then delete both the access token and the refresh token
 	deleteErr := c.Auth.DeleteTokens(ctx.Context(), metadata)
 	if deleteErr != nil {
 		return ctx.Status(fiber.StatusUnauthorized).
-			JSON(model.APIResponse(deleteErr.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
+			JSON(models.APIResponse(deleteErr.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
 	}
 
 	return ctx.Status(fiber.StatusOK).
-		JSON(model.APIResponse(nil, fiber.StatusOK, "Ok", map[string]string{
+		JSON(models.APIResponse(nil, fiber.StatusOK, "Ok", map[string]string{
 			"message": "Successfully logged out",
 		}))
 }
@@ -102,13 +102,13 @@ func (c *LoginController) Refresh(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(&mapToken)
 	if err != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).
-			JSON(model.APIResponse(err.Error(), fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
+			JSON(models.APIResponse(err.Error(), fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
 	}
 
 	refreshToken := mapToken["refresh_token"]
 	if refreshToken == "" {
 		return ctx.Status(fiber.StatusBadRequest).
-			JSON(model.APIResponse("please input the refresh token", fiber.StatusBadRequest, "Bad Request", nil))
+			JSON(models.APIResponse("please input the refresh token", fiber.StatusBadRequest, "Bad Request", nil))
 	}
 
 	//verify the token
@@ -123,13 +123,13 @@ func (c *LoginController) Refresh(ctx *fiber.Ctx) error {
 	//any error may be due to token expiration
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).
-			JSON(model.APIResponse(err.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
+			JSON(models.APIResponse(err.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
 	}
 
 	//is token valid?
 	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
 		return ctx.Status(fiber.StatusUnauthorized).
-			JSON(model.APIResponse(err.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
+			JSON(models.APIResponse(err.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
 	}
 
 	//Since token is valid, get the uuid:
@@ -138,7 +138,7 @@ func (c *LoginController) Refresh(ctx *fiber.Ctx) error {
 		refreshUuid, ok := claims["refresh_uuid"].(string) //convert the interface to string
 		if !ok {
 			return ctx.Status(fiber.StatusUnprocessableEntity).
-				JSON(model.APIResponse("Cannot get uuid", fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
+				JSON(models.APIResponse("Cannot get uuid", fiber.StatusUnprocessableEntity, "Unprocessable Entity", nil))
 		}
 
 		userId := claims["user_id"].(string)
@@ -147,21 +147,21 @@ func (c *LoginController) Refresh(ctx *fiber.Ctx) error {
 		delErr := c.Auth.DeleteRefresh(ctx.Context(), refreshUuid)
 		if delErr != nil { //if any goes wrong
 			return ctx.Status(fiber.StatusUnauthorized).
-				JSON(model.APIResponse(delErr.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
+				JSON(models.APIResponse(delErr.Error(), fiber.StatusUnauthorized, "Unauthorized", nil))
 		}
 
 		//Create new pairs of refresh and access tokens
 		ts, createErr := c.Token.CreateToken(userId)
 		if createErr != nil {
 			return ctx.Status(fiber.StatusForbidden).
-				JSON(model.APIResponse(createErr.Error(), fiber.StatusForbidden, "Forbidden", nil))
+				JSON(models.APIResponse(createErr.Error(), fiber.StatusForbidden, "Forbidden", nil))
 		}
 
 		//save the tokens metadata to redis
 		saveErr := c.Auth.CreateAuth(ctx.Context(), userId, ts)
 		if saveErr != nil {
 			return ctx.Status(fiber.StatusForbidden).
-				JSON(model.APIResponse(saveErr.Error(), fiber.StatusForbidden, "Forbidden", nil))
+				JSON(models.APIResponse(saveErr.Error(), fiber.StatusForbidden, "Forbidden", nil))
 		}
 
 		tokens := map[string]string{
@@ -170,9 +170,9 @@ func (c *LoginController) Refresh(ctx *fiber.Ctx) error {
 		}
 
 		return ctx.Status(fiber.StatusCreated).
-			JSON(model.APIResponse(nil, fiber.StatusCreated, "Created", tokens))
+			JSON(models.APIResponse(nil, fiber.StatusCreated, "Created", tokens))
 	} else {
 		return ctx.Status(fiber.StatusUnauthorized).
-			JSON(model.APIResponse("Refresh token expired", fiber.StatusUnauthorized, "Unauthorized", nil))
+			JSON(models.APIResponse("Refresh token expired", fiber.StatusUnauthorized, "Unauthorized", nil))
 	}
 }

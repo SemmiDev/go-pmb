@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
 	"github.com/go-redis/redis/v8"
 )
 

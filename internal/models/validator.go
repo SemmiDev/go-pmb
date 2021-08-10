@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"fmt"
@@ -52,7 +52,7 @@ func (r *RegistrationRequest) Validate() map[string]string {
 	return nil
 }
 
-func (u *UpdatePaymentStatus) Validate() map[string]string {
+func (u *UpdatePaymentStatusRequest) Validate() map[string]string {
 	errorCollections = make(map[string]string)
 
 	if u.RegisterID == "" {

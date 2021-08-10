@@ -1,8 +1,8 @@
-package service
+package services
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/entities"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/models"
 	"github.com/veritrans/go-midtrans"
 )
 
@@ -11,14 +11,14 @@ type service struct {
 }
 
 type Service interface {
-	GetPaymentURL(ts *model.Payment, register *entity.Registration) (string, error)
+	GetPaymentURL(ts *models.Payment, register *entities.Registration) (string, error)
 }
 
 func NewService(client midtrans.Client) Service {
 	return &service{midClient: client}
 }
 
-func (s *service) GetPaymentURL(ts *model.Payment, register *entity.Registration) (string, error) {
+func (s *service) GetPaymentURL(ts *models.Payment, register *entities.Registration) (string, error) {
 	snapGateway := midtrans.SnapGateway{
 		Client: s.midClient,
 	}

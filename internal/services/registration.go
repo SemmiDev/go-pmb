@@ -1,13 +1,13 @@
-package service
+package services
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/SemmiDev/fiber-go-clean-arch/constant"
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
-	"github.com/SemmiDev/fiber-go-clean-arch/helper"
-	"github.com/SemmiDev/fiber-go-clean-arch/model"
-	"github.com/SemmiDev/fiber-go-clean-arch/repository"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/constant"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/entities"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/helper"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/models"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/repositories"
 	"github.com/gofiber/fiber/v2"
 	"github.com/streadway/amqp"
 	"github.com/twinj/uuid"
@@ -16,18 +16,18 @@ import (
 )
 
 type RegistrationService interface {
-	Register(m *model.RegistrationRequest) (*model.RegistrationResponse, error)
-	UpdatePaymentStatus(m *model.UpdatePaymentStatus) (string, error)
-	Login(m *model.LoginRequest) (*entity.Registration, error)
+	Register(m *models.RegistrationRequest) (*models.RegistrationResponse, error)
+	UpdatePaymentStatus(m *models.UpdatePaymentStatusRequest) (string, error)
+	Login(m *models.LoginRequest) (*entities.Registration, error)
 }
 
 type registrationService struct {
-	RegistrationRepository repository.RegistrationRepository
+	RegistrationRepository repositories.RegistrationRepository
 	MailBroker             *amqp.Channel
 	PaymentService         Service
 }
 
-func NewRegistrationService(rp *repository.RegistrationRepository, mb *amqp.Channel, ps Service) RegistrationService {
+func NewRegistrationService(rp *repositories.RegistrationRepository, mb *amqp.Channel, ps Service) RegistrationService {
 	return &registrationService{
 		RegistrationRepository: *rp,
 		MailBroker:             mb,
@@ -35,33 +35,35 @@ func NewRegistrationService(rp *repository.RegistrationRepository, mb *amqp.Chan
 	}
 }
 
-func (r *registrationService) Register(register *model.RegistrationRequest) (*model.RegistrationResponse, error) {
-	// check email is already exists or not
+func (r *registrationService) Register(register *models.RegistrationRequest) (*models.RegistrationResponse, error) {
+	// Check email is already exists or not
 	emailExists := r.RegistrationRepository.GetByEmail(register.Email)
 	if emailExists {
 		return nil, constant.ErrEmail
 	}
-	// check phone is already exists or not
+
+	// Check phone is already exists or not
 	phoneExists := r.RegistrationRepository.GetByPhone(register.Phone)
 	if phoneExists {
 		return nil, constant.ErrPhone
 	}
 
-	// generate username & password
+	// Generate username & password
 	username, password := helper.Random(), helper.Random()
-	// hash password
+
+	// Hash password
 	passwordHash, err := helper.Hash(password)
 	if err != nil {
 		return nil, err
 	}
 
-	// define a registerData (default s1)
-	var registerData = entity.RegisterS1D3D4Prototype
+	// Define a registerData (default s1)
+	var registerData = entities.RegisterS1D3D4Prototype
 	if register.Program == constant.S2 {
-		registerData = entity.RegisterS2Prototype
+		registerData = entities.RegisterS2Prototype
 	}
 
-	// assign other data
+	// Assign other data
 	registerData.ID = uuid.NewV4().String()
 	registerData.Name = register.Name
 	registerData.Username = username
@@ -69,53 +71,53 @@ func (r *registrationService) Register(register *model.RegistrationRequest) (*mo
 	registerData.Email = register.Email
 	registerData.Phone = register.Phone
 
-	// time
+	// Time
 	now := primitive.NewDateTimeFromTime(time.Now())
 	registerData.CreatedAt = now
 	registerData.UpdatedAt = now
 
-	codeValue := "REGISTRATION"
+	codeValue := "REGISTER"
 	code := fmt.Sprintf("%s-%s", codeValue, registerData.ID)
 	registerData.Code = code
 
-	// define payment
-	payment := model.Payment{
+	// Define payment
+	payment := models.Payment{
 		ID:     registerData.ID,
 		Amount: registerData.Bill,
 	}
 
-	// generate payment URL
+	// Generate payment URL
 	paymentURL, err := r.PaymentService.GetPaymentURL(&payment, registerData)
 	if err != nil {
 		return nil, err
 	}
 	registerData.PaymentURL = paymentURL
 
-	// store to db
+	// Store to db
 	err = r.RegistrationRepository.Insert(registerData)
 	if err != nil {
 		return nil, err
 	}
 
-	// create the response
-	response := model.RegistrationResponse{
-		Recipient:  registerData.Email,
-		Username:   registerData.Username,
-		Password:   password,
-		Bill:       payment.AmountFormatIDR(),
-		PaymentURL: registerData.PaymentURL,
-	}
+	// Create the response
+	response := models.NewRegistrationResponse(
+		registerData.Email,
+		registerData.Username,
+		password,
+		payment.AmountFormatIDR(),
+		registerData.PaymentURL,
+	)
 
-	// uncomment if need sent to email also
+	// Uncomment if need sent to email also (nb: this section using msg broker, so you need to enable mail service first)
 	//err = r.SendEmail(response)
 	//if err != nil {
 	//	return nil, err
 	//}
 
-	return &response, nil
+	return response, nil
 }
 
-func (r *registrationService) UpdatePaymentStatus(input *model.UpdatePaymentStatus) (string, error) {
+func (r *registrationService) UpdatePaymentStatus(input *models.UpdatePaymentStatusRequest) (string, error) {
 	register := r.RegistrationRepository.GetByID(input.RegisterID)
 	if register == nil {
 		return "", constant.ErrIDNotFound
@@ -137,20 +139,20 @@ func (r *registrationService) UpdatePaymentStatus(input *model.UpdatePaymentStat
 	return register.Status, nil
 }
 
-func (r *registrationService) SendEmail(response model.RegistrationResponse) error {
-	// marshal the response
+func (r *registrationService) SendEmail(response models.RegistrationResponse) error {
+	// Marshal the response
 	payload, err := json.Marshal(response)
 	if err != nil {
 		return err
 	}
 
-	// msg payload to mail broker
+	// Msg payload to mail broker
 	msg := amqp.Publishing{
 		ContentType: fiber.MIMEApplicationJSON,
 		Body:        payload,
 	}
 
-	// publish to mail broker
+	// Publish to mail broker
 	if err = r.MailBroker.Publish(
 		"",
 		"QueueEmailServiceRegistration",
@@ -164,7 +166,7 @@ func (r *registrationService) SendEmail(response model.RegistrationResponse) err
 	return nil
 }
 
-func (r *registrationService) Login(m *model.LoginRequest) (*entity.Registration, error) {
+func (r *registrationService) Login(m *models.LoginRequest) (*entities.Registration, error) {
 	register := r.RegistrationRepository.GetByUsername(m.Username)
 	if register == nil {
 		if register == nil {

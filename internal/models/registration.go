@@ -1,4 +1,4 @@
-package model
+package models
 
 type (
 	RegistrationRequest struct {
@@ -16,10 +16,14 @@ type (
 		PaymentURL string `bson:"payment_url"`
 	}
 
-	UpdatePaymentStatus struct {
+	UpdatePaymentStatusRequest struct {
 		RegisterID    string `json:"register_id"`
 		PaymentStatus string `json:"payment_status"`
 		PaymentType   string `json:"payment_type"`
 		FraudStatus   string `json:"fraud_status"`
 	}
 )
+
+func NewRegistrationResponse(recipient string, username string, password string, bill string, paymentURL string) *RegistrationResponse {
+	return &RegistrationResponse{Recipient: recipient, Username: username, Password: password, Bill: bill, PaymentURL: paymentURL}
+}

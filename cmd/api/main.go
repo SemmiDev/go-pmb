@@ -1,13 +1,13 @@
-package setup
+package main
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/auth"
-	"github.com/SemmiDev/fiber-go-clean-arch/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/controller"
-	"github.com/SemmiDev/fiber-go-clean-arch/helper"
-	"github.com/SemmiDev/fiber-go-clean-arch/middleware"
-	"github.com/SemmiDev/fiber-go-clean-arch/repository"
-	"github.com/SemmiDev/fiber-go-clean-arch/service"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/auth"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/controllers"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/helper"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/middleware"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/repositories"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/streadway/amqp"
 	"log"
@@ -15,27 +15,39 @@ import (
 	"os/signal"
 )
 
-// App setup many stuff.
-func App(app *fiber.App) {
-	// Setup middleware
+func main() {
+	// Setup fiber.
+	app := fiber.New()
+
+	// Setup app.
+	SetupApp(app)
+
+	// Start server.
+	// app.StartServerWithGracefulShutdown(app)
+	StartServer(app)
+}
+
+// SetupApp app many stuff.
+func SetupApp(app *fiber.App) {
+	// Setup middleware.
 	middleware.FiberMiddleware(app)
 
-	// setup logger
+	// setup logger.
 	helper.SetupLogger()
 
-	// setup configuration
+	// setup configuration.
 	configuration := config.New()
 
-	// setup database
+	// setup database.
 	mongoDatabase := config.NewMongoDatabase(configuration)
 
-	// setup token
+	// setup token.
 	token := auth.NewToken()
 
-	// setup repository
-	registrationRepository := repository.NewRegistrationRepository(mongoDatabase)
+	// setup repositories.
+	registrationRepository := repositories.NewRegistrationRepository(mongoDatabase)
 
-	// setup message broker
+	// setup message broker.
 	amqpServerURL := configuration.Get("AMQP_SERVER_URL")
 	connectRabbitMQ, err := amqp.Dial(amqpServerURL)
 	helper.PanicIfNeeded(err)
@@ -44,7 +56,7 @@ func App(app *fiber.App) {
 	helper.PanicIfNeeded(err)
 	defer channelRabbitMQ.Close()
 
-	// setup queue name for rabbitMQ
+	// setup queue name for rabbitMQ.
 	_, err = channelRabbitMQ.QueueDeclare(
 		"QueueEmailServiceRegistration", // queue name
 		true,                            // durable
@@ -55,33 +67,33 @@ func App(app *fiber.App) {
 	)
 	helper.PanicIfNeeded(err)
 
-	// setup redis
+	// setup redis.
 	redisService, err := config.NewRedisDB(configuration)
 	helper.PanicIfNeeded(err)
 
-	// setup midtrans client
+	// setup midtrans client.
 	midtransClient := config.NewMidtransClient(configuration)
 
-	// setup midtrans service
-	midtransService := service.NewService(midtransClient)
+	// setup midtrans services.
+	midtransService := services.NewService(midtransClient)
 
-	// setup registration service
-	registrationService := service.NewRegistrationService(&registrationRepository, channelRabbitMQ, midtransService)
+	// setup registration services.
+	registrationService := services.NewRegistrationService(&registrationRepository, channelRabbitMQ, midtransService)
 
-	// Setup controllers
-	registrationController := controller.NewRegistrationController(&registrationService)
-	authController := controller.NewAuthController(
+	// Setup controllers.
+	registrationController := controllers.NewRegistrationController(&registrationService)
+	authController := controllers.NewAuthController(
 		&registrationService,
 		redisService.Auth,
 		token,
 	)
 
-	// Setup Routing
+	// Setup routes.
 	registrationController.Route(app)
 	authController.Route(app)
 }
 
-// StartServer func for starting a simple server.
+// StartServer  for starting a simple server.
 func StartServer(a *fiber.App) {
 	// Run server.
 	if err := a.Listen(os.Getenv("APP_PORT")); err != nil {
@@ -89,7 +101,7 @@ func StartServer(a *fiber.App) {
 	}
 }
 
-// StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
+// StartServerWithGracefulShutdown for starting server with a graceful shutdown.
 func StartServerWithGracefulShutdown(a *fiber.App) {
 	// Create channel for idle connections.
 	idleConnsClosed := make(chan struct{})

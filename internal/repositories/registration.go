@@ -1,9 +1,9 @@
-package repository
+package repositories
 
 import (
-	"github.com/SemmiDev/fiber-go-clean-arch/config"
-	"github.com/SemmiDev/fiber-go-clean-arch/entity"
-	"github.com/SemmiDev/fiber-go-clean-arch/helper"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/config"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/entities"
+	"github.com/SemmiDev/fiber-go-clean-arch/internal/helper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,9 +11,9 @@ import (
 )
 
 type RegistrationRepository interface {
-	Insert(register *entity.Registration) error
-	GetByID(ID string) *entity.Registration
-	GetByUsername(username string) *entity.Registration
+	Insert(register *entities.Registration) error
+	GetByID(ID string) *entities.Registration
+	GetByUsername(username string) *entities.Registration
 	GetByEmail(email string) bool
 	GetByPhone(phone string) bool
 	UpdateStatus(ID string, status string) error
@@ -30,7 +30,7 @@ func NewRegistrationRepository(database *mongo.Database) RegistrationRepository 
 	}
 }
 
-func (r *registrationDB) Insert(register *entity.Registration) error {
+func (r *registrationDB) Insert(register *entities.Registration) error {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
@@ -41,20 +41,20 @@ func (r *registrationDB) Insert(register *entity.Registration) error {
 	return nil
 }
 
-func (r *registrationDB) GetByID(ID string) *entity.Registration {
+func (r *registrationDB) GetByID(ID string) *entities.Registration {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account entity.Registration
+	var account entities.Registration
 	_ = r.Collection.FindOne(ctx, bson.M{"_id": ID}).Decode(&account)
 	return &account
 }
 
-func (r *registrationDB) GetByUsername(username string) *entity.Registration {
+func (r *registrationDB) GetByUsername(username string) *entities.Registration {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account entity.Registration
+	var account entities.Registration
 	_ = r.Collection.FindOne(ctx, bson.M{"username": username}).Decode(&account)
 
 	return &account
@@ -64,7 +64,7 @@ func (r *registrationDB) GetByEmail(email string) bool {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account entity.Registration
+	var account entities.Registration
 	_ = r.Collection.FindOne(ctx, bson.M{"email": email}).Decode(&account)
 	if account.ID == "" {
 		return false
@@ -76,7 +76,7 @@ func (r *registrationDB) GetByPhone(phone string) bool {
 	ctx, cancel := config.NewMongoContext()
 	defer cancel()
 
-	var account entity.Registration
+	var account entities.Registration
 	_ = r.Collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&account)
 	if account.ID == "" {
 		return false
