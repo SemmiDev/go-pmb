@@ -1,0 +1,1 @@
+Thursday, 12-Aug-21 02:14:53 UTC	[34mINFO[0m	app/server.go:15	44 <nil>

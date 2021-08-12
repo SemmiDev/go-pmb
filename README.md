@@ -1,7 +1,5 @@
 # Go Clean Arch
 
-**clone [this](https://github.com/SemmiDev/fiber-go-clean-arch.git) project, execute the [docker-compose](https://github.com/SemmiDev/fiber-go-clean-arch/blob/master/docker-compose.yml), clone and run [email-service](https://github.com/SemmiDev/mail-service.git), and run this project**
-
 ## Technologies Used
 
 - [Golang](https://golang.org)

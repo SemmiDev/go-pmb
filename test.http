@@ -1,5 +1,9 @@
+### CHECK HEALTHY
+GET http://localhost:3000/api/v1/health
+Accept: text/html
+
 ### REGISTER
-POST http://localhost:9090/api/v1/register
+POST http://localhost:3000/api/v1/register
 Accept: application/json
 Content-Type: application/json
 
@@ -10,50 +14,38 @@ Content-Type: application/json
   "program": "S2"
 }
 
-### REGISTER
-POST http://localhost:9090/api/v1/register
-Accept: application/json
-Content-Type: application/json
-
-{
-"name":  "Sam",
-"email": "sammisolution@gmail.com",
-"phone": "082387325888",
-"program": "S1D3D4"
-}
-
 ### UPDATE PAYMENT STATUS
-PUT http://localhost:9090/api/v1/register/payment/status
+PUT http://localhost:3000/api/v1/register/paymentStatus
 Accept: application/json
 Content-Type: application/json
 
 {
   "payment_status": "capture",
-  "register_id": "2a39856e-6a37-4f42-bcb2-2a5f6893dcfe",
+  "register_id": "6115197881018dff965c0d94",
   "payment_type": "credit_card",
   "fraud_status": "accept"
 }
 
 ### LOGIN
-POST http://localhost:9090/api/v1/auth/login
+POST http://localhost:3000/api/v1/auth/login
 Accept: application/json
 Content-Type: application/json
 
 {
-  "username" : "701623854",
-  "password" : "360581472"
+  "username" : "706548132",
+  "password" : "627508134"
 }
 
 ### LOGOUT
-POST http://localhost:9090/api/v1/auth/logout
+POST http://localhost:3000/api/v1/auth/logout
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjQ2MTJlN2U3LTUzYTMtNGJkYS04YzE5LTg4ZTI3NDgxMjAxMyIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyODUwNjIyNiwidXNlcl9pZCI6IjJhMzk4NTZlLTZhMzctNGY0Mi1iY2IyLTJhNWY2ODkzZGNmZSJ9.x7h1DqvEzKbKe3j___irXPuPKfAJ_H-Lz8-mJ0IQXkk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImYwNGRmZmZlLWExOWItNGY4MC1iMTJkLTRiNDRkNTMzZjQzZSIsImF1dGhvcml6ZWQiOnRydWUsImVtYWlsIjoic2FtbWlzb2x1dGlvbkBnbWFpbC5jb20iLCJleHAiOjE2Mjg3NzM3MjUsInVzZXJfaWQiOiI2MTE1MTk3ODgxMDE4ZGZmOTY1YzBkOTQifQ.1WIPacItiEu05yaj1-w4chXTOcnPUkYK5jJ2rzBG5as
 
 ### REFRESH
-POST http://localhost:9090/api/v1/auth/refresh
+POST http://localhost:3000/api/v1/auth/refresh
 Accept: application/json
 Content-Type: application/json
 
 {
-  "refresh_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjkxMTAzMDEsInJlZnJlc2hfdXVpZCI6IjYwOWM2NTJiLTg5ZTktNGU0NS04OGMwLTg5ZGNjMjM0NzBjMisrMmEzOTg1NmUtNmEzNy00ZjQyLWJjYjItMmE1ZjY4OTNkY2ZlIiwidXNlcl9pZCI6IjJhMzk4NTZlLTZhMzctNGY0Mi1iY2IyLTJhNWY2ODkzZGNmZSJ9.q7Bc01q70_YztJ7AWB5fA8HaqXbg7ZjEJScYvjFvcPU"
+  "refresh_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhbW1pc29sdXRpb25AZ21haWwuY29tIiwiZXhwIjoxNjI5Mzc3NjYzLCJyZWZyZXNoX3V1aWQiOiIyNGQwMjQwNy02Yjc0LTRjNTMtODJjMC05ODEzYTkyNWRlYmIrKzYxMTUxOTc4ODEwMThkZmY5NjVjMGQ5NCIsInVzZXJfaWQiOiI2MTE1MTk3ODgxMDE4ZGZmOTY1YzBkOTQifQ.t4oDc5Ozx3hrycW-GEifSnJMThUj5CCG_txTJZerOH8"
 }
