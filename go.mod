@@ -1,26 +1,29 @@
-module github.com/SemmiDev/fiber-go-clean-arch
+module github.com/SemmiDev/go-pmb
 
-go 1.16
+go 1.17
 
 require (
-	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/go-redis/redis/v8 v8.11.1
-	github.com/gofiber/fiber/v2 v2.16.0
-	github.com/gofiber/jwt/v2 v2.2.5
+	github.com/go-sql-driver/mysql v1.6.0
+	github.com/gofiber/fiber/v2 v2.18.0
+	github.com/joho/godotenv v1.3.0
 	github.com/leekchan/accounting v1.0.0
-	github.com/myesui/uuid v1.0.0 // indirect
-	github.com/spf13/viper v1.8.1
-	github.com/streadway/amqp v1.0.0
-	github.com/twinj/uuid v1.0.0
+	github.com/myesui/uuid v1.0.0
 	github.com/veritrans/go-midtrans v0.0.0-20210616100512-16326c5eeb00
-	go.mongodb.org/mongo-driver v1.4.6
-	go.uber.org/atomic v1.9.0 // indirect
-	go.uber.org/multierr v1.7.0 // indirect
-	go.uber.org/zap v1.18.1
-	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
-	golang.org/x/tools v0.1.5 // indirect
-	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+)
+
+require (
+	github.com/andybalholm/brotli v1.0.2 // indirect
+	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
+	github.com/cockroachdb/apd v1.1.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/klauspost/compress v1.13.4 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasthttp v1.29.0 // indirect
+	github.com/valyala/tcplisten v1.0.0 // indirect
+	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 )
