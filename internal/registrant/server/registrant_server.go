@@ -1,23 +1,22 @@
 package server
 
 import (
-	"github.com/SemmiDev/go-pmb/internal/database"
-	"github.com/SemmiDev/go-pmb/pkg/helper"
-	"github.com/SemmiDev/go-pmb/pkg/payment"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/domain"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/errors"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/query"
-	registrantQueryMySql "github.com/SemmiDev/go-pmb/pkg/registrant/query/mysql"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/repository"
-	registrantRepoMySql "github.com/SemmiDev/go-pmb/pkg/registrant/repository/mysql"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/storage"
-	"github.com/SemmiDev/go-pmb/pkg/web"
+	"github.com/SemmiDev/go-pmb/internal/common/database"
+	"github.com/SemmiDev/go-pmb/internal/common/helper"
+	"github.com/SemmiDev/go-pmb/internal/common/web"
+	"github.com/SemmiDev/go-pmb/internal/payment"
+	"github.com/SemmiDev/go-pmb/internal/registrant/command"
+	registrantCmdMySql "github.com/SemmiDev/go-pmb/internal/registrant/command/mysql"
+	"github.com/SemmiDev/go-pmb/internal/registrant/domain"
+	"github.com/SemmiDev/go-pmb/internal/registrant/query"
+	registrantQueryMySql "github.com/SemmiDev/go-pmb/internal/registrant/query/mysql"
+	"github.com/SemmiDev/go-pmb/internal/registrant/storage"
 	"github.com/gofiber/fiber/v2"
 	"github.com/myesui/uuid"
 )
 
 type RegistrantServer struct {
-	RegistrantRepo  repository.RegistrantRepository
+	RegistrantRepo  command.RegistrantCommand
 	RegistrantQuery query.RegistrantQuery
 	Midtrans        payment.IMidtrans
 }
@@ -33,7 +32,7 @@ func NewRegistrantServer() *RegistrantServer {
 
 	registrantServer.Midtrans = payment.NewMidtrans()
 	registrantServer.RegistrantQuery = registrantQueryMySql.NewRegistrantMySqlQuery(mySqlConnection)
-	registrantServer.RegistrantRepo = registrantRepoMySql.NewRegistrantRepositoryMysql(mySqlConnection)
+	registrantServer.RegistrantRepo = registrantCmdMySql.NewRegistrantCommandMysql(mySqlConnection)
 
 	return registrantServer
 }
@@ -75,7 +74,7 @@ func (r *RegistrantServer) registerRegistrant(req *domain.CreateRegistrantReq) (
 		registrant.Program = domain.ProgramS2
 		registrant.Bill = domain.BillS2
 	} else {
-		return nil, errors.RegistrantError{Code: errors.RegistrantErrorProgramNotSupportedCode}
+		return nil, domain.RegistrantError{Code: domain.RegistrantErrorProgramNotSupportedCode}
 	}
 
 	paymentPayload := payment.Payload{

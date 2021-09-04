@@ -1,10 +1,10 @@
-package repository
+package command
 
 import (
-	"github.com/SemmiDev/go-pmb/pkg/registrant/domain"
+	"github.com/SemmiDev/go-pmb/internal/registrant/domain"
 )
 
-type RegistrantRepository interface {
+type RegistrantCommand interface {
 	Save(registrant *domain.Registrant) <-chan error
 	UpdateStatus(id string, status domain.PaymentStatus) <-chan error
 }

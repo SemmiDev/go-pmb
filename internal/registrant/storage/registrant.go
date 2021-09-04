@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/SemmiDev/go-pmb/pkg/registrant/domain"
+	"github.com/SemmiDev/go-pmb/internal/registrant/domain"
 	"time"
 )
 

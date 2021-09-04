@@ -1,4 +1,4 @@
-package errors
+package domain
 
 // RegistrantError is a custom error from Go built-in error
 type RegistrantError struct {

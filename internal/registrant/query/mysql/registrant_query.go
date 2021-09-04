@@ -2,9 +2,14 @@ package mysql
 
 import (
 	"database/sql"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/query"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/storage"
+	"github.com/SemmiDev/go-pmb/internal/registrant/query"
+	"github.com/SemmiDev/go-pmb/internal/registrant/storage"
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	GetByIDQuery       = `SELECT * FROM registrants WHERE registrant_id = ?`
+	GetByUsernameQuery = `SELECT * FROM registrants WHERE username = ?`
 )
 
 type RegistrantQueryMySql struct {
@@ -17,7 +22,7 @@ func (s RegistrantQueryMySql) GetByID(id string) <-chan query.RegistrantQueryRes
 	go func() {
 		rowsData := storage.RegistrantResult{}
 
-		err := s.DB.QueryRow(`SELECT * FROM registrants WHERE registrant_id = ?`, id).Scan(
+		err := s.DB.QueryRow(GetByIDQuery, id).Scan(
 			&rowsData.RegistrantId,
 			&rowsData.Name,
 			&rowsData.Email,
@@ -44,6 +49,7 @@ func (s RegistrantQueryMySql) GetByID(id string) <-chan query.RegistrantQueryRes
 		result <- query.RegistrantQueryResult{Result: rowsData}
 		close(result)
 	}()
+
 	return result
 }
 
@@ -53,7 +59,7 @@ func (s RegistrantQueryMySql) GetByUsername(username string) <-chan query.Regist
 	go func() {
 		rowsData := storage.RegistrantResult{}
 
-		err := s.DB.QueryRow(`SELECT * FROM registrants WHERE username = ?`, username).Scan(
+		err := s.DB.QueryRow(GetByUsernameQuery, username).Scan(
 			&rowsData.RegistrantId,
 			&rowsData.Name,
 			&rowsData.Email,
@@ -80,6 +86,7 @@ func (s RegistrantQueryMySql) GetByUsername(username string) <-chan query.Regist
 		result <- query.RegistrantQueryResult{Result: rowsData}
 		close(result)
 	}()
+
 	return result
 }
 
@@ -89,7 +96,7 @@ func (s RegistrantQueryMySql) GetByUsernameAndPassword(username, password string
 	go func() {
 		rowsData := storage.RegistrantResult{}
 
-		err := s.DB.QueryRow(`SELECT * FROM registrants WHERE username = ?`, username).Scan(
+		err := s.DB.QueryRow(GetByUsernameQuery, username).Scan(
 			&rowsData.RegistrantId,
 			&rowsData.Name,
 			&rowsData.Email,
@@ -120,6 +127,7 @@ func (s RegistrantQueryMySql) GetByUsernameAndPassword(username, password string
 		result <- query.RegistrantQueryResult{Result: rowsData}
 		close(result)
 	}()
+
 	return result
 }
 

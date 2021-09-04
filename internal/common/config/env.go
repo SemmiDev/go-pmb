@@ -26,15 +26,15 @@ func (config *configImpl) Get(key string) string {
 	return os.Getenv(key)
 }
 
+var config = &configImpl{}
+
 func Load(filenames ...string) {
 	err := godotenv.Load(filenames...)
 	if err != nil {
 		panic(err)
 	}
 
-	config := &configImpl{}
 	AppPort = config.Get("")
-
 	AppPort = config.Get("APP_PORT")
 	MysqlHost = config.Get("MYSQL_HOST")
 	MysqlPort = config.Get("MYSQL_PORT")

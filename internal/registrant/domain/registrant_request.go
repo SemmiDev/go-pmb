@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/SemmiDev/go-pmb/pkg/registrant/errors"
 	"net"
 	"net/mail"
 	"regexp"
@@ -19,32 +18,31 @@ var phoneRegex = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)
 
 func (r *CreateRegistrantReq) Validate() error {
 	if r.Name == "" {
-		return errors.RegistrantError{errors.RegistrantErrorNameEmptyCode}
+		return RegistrantError{RegistrantErrorNameEmptyCode}
 	}
 	if r.Email == "" {
-		return errors.RegistrantError{errors.RegistrantErrorEmailEmptyCode}
+		return RegistrantError{RegistrantErrorEmailEmptyCode}
 	}
 	_, err := mail.ParseAddress(r.Email)
 	if err != nil {
-		return errors.RegistrantError{errors.RegistrantErrorEmailNotValidCode}
+		return RegistrantError{RegistrantErrorEmailNotValidCode}
 	}
 	_, err = net.LookupMX(strings.Split(r.Email, "@")[1])
 	if err != nil {
-		return errors.RegistrantError{errors.RegistrantErrorDomainNotFoundCode}
+		return RegistrantError{RegistrantErrorDomainNotFoundCode}
 	}
 	if r.Phone == "" {
-		return errors.RegistrantError{errors.RegistrantErrorPhoneNumberEmptyCode}
+		return RegistrantError{RegistrantErrorPhoneNumberEmptyCode}
 	}
 	if !phoneRegex.MatchString(r.Phone) {
-		return errors.RegistrantError{errors.RegistrantErrorPhoneNumberNotValidCode}
+		return RegistrantError{RegistrantErrorPhoneNumberNotValidCode}
 	}
 	if r.Program == "" {
-		return errors.RegistrantError{errors.RegistrantErrorProgramEmptyCode}
+		return RegistrantError{RegistrantErrorProgramEmptyCode}
 	}
 	if !isProgramSupported(r.Program) {
-		return errors.RegistrantError{errors.RegistrantErrorProgramNotSupportedCode}
+		return RegistrantError{RegistrantErrorProgramNotSupportedCode}
 	}
-
 	return nil
 }
 
@@ -57,16 +55,16 @@ type UpdatePaymentStatusReq struct {
 
 func (r *UpdatePaymentStatusReq) Validate() error {
 	if r.RegisterID == "" {
-		return errors.RegistrantError{errors.RegistrantErrorRegistrantIdEmptyCode}
+		return RegistrantError{RegistrantErrorRegistrantIdEmptyCode}
 	}
 	if r.PaymentStatus == "" {
-		return errors.RegistrantError{errors.RegistrantErrorPaymentStatusEmptyCode}
+		return RegistrantError{RegistrantErrorPaymentStatusEmptyCode}
 	}
 	if r.PaymentType == "" {
-		return errors.RegistrantError{errors.RegistrantErrorPaymentTypeStatusEmptyCode}
+		return RegistrantError{RegistrantErrorPaymentTypeStatusEmptyCode}
 	}
 	if r.FraudStatus == "" {
-		return errors.RegistrantError{errors.RegistrantErrorFraudStatusEmptyCode}
+		return RegistrantError{RegistrantErrorFraudStatusEmptyCode}
 	}
 	return nil
 }

@@ -1,8 +1,7 @@
 package domain
 
 import (
-	"github.com/SemmiDev/go-pmb/pkg/helper"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/errors"
+	"github.com/SemmiDev/go-pmb/internal/common/helper"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
@@ -58,7 +57,7 @@ func (r *Registrant) HashPassword() {
 func (r *Registrant) IsPasswordValid(p string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword([]byte(r.Password), []byte(p))
 	if err != nil {
-		return false, errors.RegistrantError{errors.RegistrantErrorWrongPasswordCode}
+		return false, RegistrantError{RegistrantErrorWrongPasswordCode}
 	}
 	return true, nil
 }

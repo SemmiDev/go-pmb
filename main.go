@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/SemmiDev/go-pmb/internal/config"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/server"
+	"github.com/SemmiDev/go-pmb/internal/common/config"
+	"github.com/SemmiDev/go-pmb/internal/registrant/server"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"

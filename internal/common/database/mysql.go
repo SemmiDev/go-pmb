@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"github.com/SemmiDev/go-pmb/internal/config"
+	"github.com/SemmiDev/go-pmb/internal/common/config"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 )

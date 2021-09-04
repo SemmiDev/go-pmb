@@ -1,8 +1,8 @@
 package payment
 
 import (
-	"github.com/SemmiDev/go-pmb/internal/config"
-	"github.com/SemmiDev/go-pmb/pkg/registrant/domain"
+	"github.com/SemmiDev/go-pmb/internal/common/config"
+	"github.com/SemmiDev/go-pmb/internal/registrant/domain"
 	"github.com/leekchan/accounting"
 	"github.com/veritrans/go-midtrans"
 )
