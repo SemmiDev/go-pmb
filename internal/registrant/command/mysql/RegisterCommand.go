@@ -21,7 +21,12 @@ func (s *RegistrantCommandMysql) Save(registrant *domain.Registrant) <-chan erro
 	result := make(chan error)
 
 	go func() {
-		_, err := s.DB.Exec(SaveQuery,
+		trx, err := s.DB.Begin()
+		if err != nil {
+			result <- err
+		}
+
+		_, err = trx.Exec(SaveQuery,
 			registrant.RegistrantId,
 			registrant.Name,
 			registrant.Email,
@@ -41,6 +46,11 @@ func (s *RegistrantCommandMysql) Save(registrant *domain.Registrant) <-chan erro
 			result <- err
 		}
 
+		err = trx.Commit()
+		if err != nil {
+			result <- nil
+		}
+
 		result <- nil
 		close(result)
 	}()
@@ -52,9 +62,19 @@ func (s *RegistrantCommandMysql) UpdateStatus(id string, status domain.PaymentSt
 	result := make(chan error)
 
 	go func() {
-		_, err := s.DB.Exec(UpdateStatusQuery, status)
+		trx, err := s.DB.Begin()
 		if err != nil {
 			result <- err
+		}
+
+		_, err = trx.Exec(UpdateStatusQuery, status)
+		if err != nil {
+			result <- err
+		}
+
+		err = trx.Commit()
+		if err != nil {
+			result <- nil
 		}
 
 		result <- nil

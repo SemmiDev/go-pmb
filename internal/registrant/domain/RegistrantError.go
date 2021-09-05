@@ -7,23 +7,24 @@ type RegistrantError struct {
 
 const (
 	RegistrantErrorUsernameEmptyCode = iota
-	RegistrantErrorPasswordEmptyCode
-	RegistrantErrorWrongPasswordCode
 	RegistrantErrorNameEmptyCode
 	RegistrantErrorEmailEmptyCode
-	RegistrantErrorEmailNotValidCode
-	RegistrantErrorPhoneNumberEmptyCode
-	RegistrantErrorPhoneNumberNotValidCode
 	RegistrantErrorProgramEmptyCode
-	RegistrantErrorNotYetBillCode
+	RegistrantErrorPasswordEmptyCode
+	RegistrantErrorRegisterIdEmptyCode
+	RegistrantErrorPhoneNumberEmptyCode
+	RegistrantErrorFraudStatusEmptyCode
+	RegistrantErrorRegistrantIdEmptyCode
 	RegistrantErrorPaymentStatusEmptyCode
 	RegistrantErrorPaymentTypeStatusEmptyCode
-	RegistrantErrorFraudStatusEmptyCode
-	RegistrantErrorRegisterIdNotFoundCode
-	RegistrantErrorRegisterIdEmptyCode
-	RegistrantErrorProgramNotSupportedCode
+
+	RegistrantErrorNotYetBillCode
+	RegistrantErrorEmailNotValidCode
+	RegistrantErrorWrongPasswordCode
 	RegistrantErrorDomainNotFoundCode
-	RegistrantErrorRegistrantIdEmptyCode
+	RegistrantErrorRegisterIdNotFoundCode
+	RegistrantErrorProgramNotSupportedCode
+	RegistrantErrorPhoneNumberNotValidCode
 )
 
 func (e RegistrantError) Error() string {

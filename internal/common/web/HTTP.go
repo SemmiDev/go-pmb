@@ -12,13 +12,13 @@ type Meta struct {
 }
 
 type HttpResponse struct {
-	Meta Meta        `json:"meta"`
+	Meta *Meta       `json:"meta"`
 	Data interface{} `json:"data"`
 }
 
 func NewHttpResponse(message interface{}, code int, status string, data interface{}) *HttpResponse {
 	return &HttpResponse{
-		Meta: Meta{
+		Meta: &Meta{
 			Code:    code,
 			Status:  status,
 			Message: message,
@@ -35,6 +35,10 @@ func formatError(message interface{}) map[string]string {
 
 func Ok(data interface{}) *HttpResponse {
 	return NewHttpResponse(nil, http.StatusOK, http.StatusText(http.StatusOK), data)
+}
+
+func NoContent() *HttpResponse {
+	return NewHttpResponse(nil, http.StatusOK, http.StatusText(http.StatusOK), nil)
 }
 
 func Created(data interface{}) *HttpResponse {
