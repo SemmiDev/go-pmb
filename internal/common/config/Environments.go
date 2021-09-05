@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 	"os"
 )
 
@@ -35,12 +35,7 @@ func (c *configImpl) ifEmpty(env string, defaultValue string) string {
 
 var c = &configImpl{}
 
-func Load(filenames ...string) {
-	err := godotenv.Load(filenames...)
-	if err != nil {
-		panic(err)
-	}
-
+func Load() {
 	AppPort = c.ifEmpty(c.Get("AppPort"), ":3000")
 
 	MysqlHost = c.ifEmpty(c.Get("MYSQL_HOST"), "localhost")
