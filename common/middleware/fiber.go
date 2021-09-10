@@ -8,7 +8,13 @@ import (
 )
 
 func RegisterFiberMiddleware(app *fiber.App) {
-	app.Use(cors.New())
+	corsConfig := cors.ConfigDefault
+	corsConfig.AllowCredentials = true
+	app.Use(cors.New(corsConfig))
+
+	loggerConfig := logger.ConfigDefault
+	loggerConfig.TimeZone = "Asia/Jakarta"
+	app.Use(logger.New(loggerConfig))
+
 	app.Use(recover.New())
-	app.Use(logger.New())
 }

@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-var MySqlDB *sql.DB
-
-func MySQLConnect() {
+func MySQLConnect() (MySqlDB *sql.DB) {
 	DSN := MysqlUser + ":" + MysqlPassword + "@(" + MysqlHost + ":" + MysqlPort + ")/" + MysqlDbname + "?parseTime=true&clientFoundRows=true"
 	MySqlDB, err := sql.Open("mysql", DSN)
 	if err != nil {
@@ -24,4 +22,6 @@ func MySQLConnect() {
 	MySqlDB.SetMaxOpenConns(50)
 	MySqlDB.SetMaxIdleConns(50)
 	MySqlDB.SetConnMaxLifetime(time.Minute * 30)
+
+	return
 }

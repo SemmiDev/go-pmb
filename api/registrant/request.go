@@ -1,13 +1,14 @@
-package domain
+package registrant
 
 import (
+	"errors"
 	"net"
 	"net/mail"
 	"regexp"
 	"strings"
 )
 
-type CreateRegistrantReq struct {
+type RegisterReq struct {
 	Name    string  `json:"name"`
 	Email   string  `json:"email"`
 	Phone   string  `json:"phone"`
@@ -16,33 +17,34 @@ type CreateRegistrantReq struct {
 
 var phoneRegex = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
 
-func (r *CreateRegistrantReq) Validate() error {
+func (r *RegisterReq) Validate() error {
 	if r.Name == "" {
-		return RegistrantError{RegistrantErrorNameEmptyCode}
+		return errors.New("name is empty")
 	}
 	if r.Email == "" {
-		return RegistrantError{RegistrantErrorEmailEmptyCode}
+		return errors.New("email is empty")
 	}
 	_, err := mail.ParseAddress(r.Email)
 	if err != nil {
-		return RegistrantError{RegistrantErrorEmailNotValidCode}
+		return errors.New("invalid email")
 	}
 	_, err = net.LookupMX(strings.Split(r.Email, "@")[1])
 	if err != nil {
-		return RegistrantError{RegistrantErrorDomainNotFoundCode}
+		return errors.New("invalid email")
 	}
 	if r.Phone == "" {
-		return RegistrantError{RegistrantErrorPhoneNumberEmptyCode}
+		return errors.New("phone is empty")
 	}
 	if !phoneRegex.MatchString(r.Phone) {
-		return RegistrantError{RegistrantErrorPhoneNumberNotValidCode}
+		return errors.New("invalid phone number")
 	}
-	if r.Program == "" {
-		return RegistrantError{RegistrantErrorProgramEmptyCode}
+	if r.Program.Empty() {
+		return errors.New("program is empty")
 	}
-	if !isProgramSupported(r.Program) {
-		return RegistrantError{RegistrantErrorProgramNotSupportedCode}
+	if !r.Program.IsSupported() {
+		return errors.New("program is not supported")
 	}
+
 	return nil
 }
 
@@ -55,25 +57,33 @@ type UpdatePaymentStatusReq struct {
 
 func (r *UpdatePaymentStatusReq) Validate() error {
 	if r.RegisterID == "" {
-		return RegistrantError{RegistrantErrorRegistrantIdEmptyCode}
+		return errors.New("register id is empty")
 	}
 	if r.PaymentStatus == "" {
-		return RegistrantError{RegistrantErrorPaymentStatusEmptyCode}
+		return errors.New("payment status is empty")
 	}
 	if r.PaymentType == "" {
-		return RegistrantError{RegistrantErrorPaymentTypeStatusEmptyCode}
+		return errors.New("payment type is empty")
 	}
 	if r.FraudStatus == "" {
-		return RegistrantError{RegistrantErrorFraudStatusEmptyCode}
+		return errors.New("fraud status is empty")
 	}
+
 	return nil
 }
 
-func isProgramSupported(program Program) bool {
-	switch program {
-	case ProgramS1D3D4, ProgramS2:
-		return true
-	default:
-		return false
+type LoginReq struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (l *LoginReq) Validate() error {
+	if l.Username == "" {
+		return errors.New("username is empty")
 	}
+	if l.Password == "" {
+		return errors.New("password is empty")
+	}
+
+	return nil
 }

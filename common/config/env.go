@@ -3,6 +3,7 @@ package config
 import (
 	_ "github.com/joho/godotenv/autoload"
 	"os"
+	"time"
 )
 
 var (
@@ -14,6 +15,9 @@ var (
 	MysqlPassword     string
 	MidtransServerKey string
 	MidtransClientKey string
+
+	TokenSymmetricKey   string
+	AccessTokenDuration time.Duration
 )
 
 type Config interface {
@@ -46,6 +50,12 @@ func Load() {
 
 	MidtransServerKey = c.Get("MIDTRANS_SERVER_KEY")
 	MidtransClientKey = c.Get("MIDTRANS_CLIENT_KEY")
+
+	TokenSymmetricKey = c.Get("TOKEN_SYMMETRIC_KEY")
+
+	accessTokenDuration := c.Get("ACCESS_TOKEN_DURATION")
+	duration, _ := time.ParseDuration(accessTokenDuration)
+	AccessTokenDuration = duration
 
 	MySQLConnect()
 }

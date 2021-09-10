@@ -1,9 +1,7 @@
-package mysql
+package registrant
 
 import (
 	"database/sql"
-	"github.com/SemmiDev/go-pmb/internal/registrant/query"
-	"github.com/SemmiDev/go-pmb/internal/registrant/storage"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,15 +10,15 @@ const (
 	GetByUsernameQuery = `SELECT * FROM registrants WHERE username = ?`
 )
 
-type RegistrantQueryMySql struct {
+type QueryMySql struct {
 	DB *sql.DB
 }
 
-func (s RegistrantQueryMySql) GetByID(id string) <-chan query.RegistrantQueryResult {
-	result := make(chan query.RegistrantQueryResult)
+func (s QueryMySql) GetByID(id string) <-chan QueryResult {
+	result := make(chan QueryResult)
 
 	go func() {
-		rowsData := storage.RegistrantResult{}
+		rowsData := ReadResult{}
 
 		err := s.DB.QueryRow(GetByIDQuery, id).Scan(
 			&rowsData.RegistrantId,
@@ -39,25 +37,25 @@ func (s RegistrantQueryMySql) GetByID(id string) <-chan query.RegistrantQueryRes
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.RegistrantQueryResult{Error: err}
+			result <- QueryResult{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.RegistrantQueryResult{Result: storage.RegistrantResult{}}
+			result <- QueryResult{Result: ReadResult{}}
 		}
 
-		result <- query.RegistrantQueryResult{Result: rowsData}
+		result <- QueryResult{Result: rowsData}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s RegistrantQueryMySql) GetByUsername(username string) <-chan query.RegistrantQueryResult {
-	result := make(chan query.RegistrantQueryResult)
+func (s QueryMySql) GetByUsername(username string) <-chan QueryResult {
+	result := make(chan QueryResult)
 
 	go func() {
-		rowsData := storage.RegistrantResult{}
+		rowsData := ReadResult{}
 
 		err := s.DB.QueryRow(GetByUsernameQuery, username).Scan(
 			&rowsData.RegistrantId,
@@ -76,25 +74,25 @@ func (s RegistrantQueryMySql) GetByUsername(username string) <-chan query.Regist
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.RegistrantQueryResult{Error: err}
+			result <- QueryResult{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.RegistrantQueryResult{Result: storage.RegistrantResult{}}
+			result <- QueryResult{Result: ReadResult{}}
 		}
 
-		result <- query.RegistrantQueryResult{Result: rowsData}
+		result <- QueryResult{Result: rowsData}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s RegistrantQueryMySql) GetByUsernameAndPassword(username, password string) <-chan query.RegistrantQueryResult {
-	result := make(chan query.RegistrantQueryResult)
+func (s QueryMySql) GetByUsernameAndPassword(username, password string) <-chan QueryResult {
+	result := make(chan QueryResult)
 
 	go func() {
-		rowsData := storage.RegistrantResult{}
+		rowsData := ReadResult{}
 
 		err := s.DB.QueryRow(GetByUsernameQuery, username).Scan(
 			&rowsData.RegistrantId,
@@ -113,26 +111,26 @@ func (s RegistrantQueryMySql) GetByUsernameAndPassword(username, password string
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.RegistrantQueryResult{Error: err}
+			result <- QueryResult{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.RegistrantQueryResult{Result: storage.RegistrantResult{}}
+			result <- QueryResult{Result: ReadResult{}}
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(rowsData.Password), []byte(password)); err != nil {
-			result <- query.RegistrantQueryResult{Error: err}
+			result <- QueryResult{Error: err}
 		}
 
-		result <- query.RegistrantQueryResult{Result: rowsData}
+		result <- QueryResult{Result: rowsData}
 		close(result)
 	}()
 
 	return result
 }
 
-func NewRegistrantMySqlQuery(database *sql.DB) query.RegistrantQuery {
-	return RegistrantQueryMySql{
+func NewMySqlQuery(database *sql.DB) QueryRepository {
+	return QueryMySql{
 		DB: database,
 	}
 }

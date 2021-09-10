@@ -8,8 +8,18 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "Sammi Aldhi Yanto",
-  "email": "sammidev4@yahoo.id",
-  "phone": "082387325888",
+  "name": "Rahmatul Izzah Annisa",
+  "email": "izzah@gmail.com",
+  "phone": "082387325810",
   "program": "S2"
+}
+
+###
+POST http://localhost:3000/api/registrant/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "3481950762",
+  "password": "34811910147621310512"
 }
