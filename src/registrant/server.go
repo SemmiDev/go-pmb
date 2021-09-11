@@ -2,14 +2,17 @@ package registrant
 
 import (
 	"fmt"
-	"github.com/SemmiDev/go-pmb/common/config"
-	"github.com/SemmiDev/go-pmb/common/token"
+	"github.com/SemmiDev/go-pmb/src/common/config"
+	"github.com/SemmiDev/go-pmb/src/common/token"
+	"github.com/SemmiDev/go-pmb/src/registrant/interfaces"
+	"github.com/SemmiDev/go-pmb/src/registrant/payments"
+	"github.com/SemmiDev/go-pmb/src/registrant/repositories"
 	"github.com/gofiber/fiber/v2"
 )
 
 type Server struct {
-	registrantRepo Repository
-	midtrans       IMidtrans
+	registrantRepo interfaces.IRepository
+	midtrans       payments.IMidtrans
 	tokenMaker     token.Maker
 	router         *fiber.App
 }
@@ -17,9 +20,8 @@ type Server struct {
 func NewServer() (*Server, error) {
 	mySqlConnection := config.MySQLConnect()
 
-	midtrans := NewMidtrans()
-	command := NewCommandMysql(mySqlConnection)
-	query := NewMySqlQuery(mySqlConnection)
+	midtrans := payments.NewMidtrans()
+	repo := repositories.NewRegistrantRepository(mySqlConnection)
 
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
@@ -27,12 +29,9 @@ func NewServer() (*Server, error) {
 	}
 
 	server := &Server{
-		registrantRepo: Repository{
-			Cmd:   command,
-			Query: query,
-		},
-		midtrans:   midtrans,
-		tokenMaker: tokenMaker,
+		registrantRepo: repo,
+		midtrans:       midtrans,
+		tokenMaker:     tokenMaker,
 	}
 
 	return server, nil

@@ -1,4 +1,4 @@
-package registrant
+package entities
 
 type (
 	Program       string
@@ -18,7 +18,7 @@ const (
 	PaymentStatusCancel  PaymentStatus = "cancel"
 )
 
-func (p Program) Value() string {
+func (p Program) Val() string {
 	switch p {
 	case ProgramS1D3D4:
 		return string(ProgramS1D3D4)
@@ -39,7 +39,7 @@ func (p Program) IsSupported() bool {
 }
 
 func (p Program) Empty() bool {
-	if p.Value() != "" {
+	if p.Val() != "" {
 		return false
 	}
 	return true
@@ -56,7 +56,7 @@ func (p Program) Bill() Bill {
 	}
 }
 
-func (p PaymentStatus) Value() string {
+func (p PaymentStatus) Val() string {
 	switch p {
 	case PaymentStatusPending:
 		return string(PaymentStatusPending)
@@ -69,7 +69,7 @@ func (p PaymentStatus) Value() string {
 	}
 }
 
-func (b Bill) Value() int64 {
+func (b Bill) Val() int64 {
 	switch b {
 	case BillS1D3D4:
 		return int64(BillS1D3D4)

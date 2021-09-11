@@ -56,6 +56,4 @@ func Load() {
 	accessTokenDuration := c.Get("ACCESS_TOKEN_DURATION")
 	duration, _ := time.ParseDuration(accessTokenDuration)
 	AccessTokenDuration = duration
-
-	MySQLConnect()
 }

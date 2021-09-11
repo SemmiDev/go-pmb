@@ -2,7 +2,6 @@ package helper
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"math/rand"
 	"strings"
@@ -11,6 +10,7 @@ import (
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
+// RandomString rand string from alphabet with length n.
 func RandomString(n int) string {
 	var sb strings.Builder
 	k := len(alphabet)
@@ -23,30 +23,24 @@ func RandomString(n int) string {
 	return sb.String()
 }
 
-func Random() string {
-	rand.Seed(time.Now().UnixNano())
-	v := rand.Perm(9)
-	return arrayToString(v, "")
-}
-
-// RandomOwner generates a random owner name
+// RandomOwner generates a random owner name.
 func RandomOwner() string {
 	return RandomString(6)
 }
 
-func GenerateID() string {
-	return uuid.NewString()
-}
-
+// GenerateUsername for generate rand numbers with length 10.
 func GenerateUsername() string {
 	rand.Seed(time.Now().UnixNano())
 	v := rand.Perm(10)
+
 	return arrayToString(v, "")
 }
 
+// GeneratePassword for generate rand numbers with length 15.
 func GeneratePassword() string {
 	rand.Seed(time.Now().UnixNano())
 	v := rand.Perm(15)
+
 	return arrayToString(v, "")
 }
 
@@ -54,6 +48,7 @@ func arrayToString(a []int, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
 }
 
+// Hash for hash a string using bcrypt.
 func Hash(s string) string {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
 	return string(bytes)
