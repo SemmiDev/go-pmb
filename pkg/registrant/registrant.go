@@ -1,7 +1,7 @@
-package entities
+package registrant
 
 import (
-	"github.com/SemmiDev/go-pmb/src/common/helper"
+	"github.com/SemmiDev/go-pmb/pkg/common/helper"
 	"github.com/google/uuid"
 	"time"
 )
@@ -32,12 +32,14 @@ func NewRegistrant(name, email, phone, password string, program Program) *Regist
 	r.ID = uuid.NewString()
 	r.Username = helper.GenerateUsername()
 	r.Password = helper.Hash(password)
+	r.Name = name
 	r.Email = email
 	r.Phone = phone
 	r.Program = program
 	r.Code = "register-registrant" + r.Username + r.Password
 	r.Bill = program.Bill()
 	r.PaymentStatus = PaymentStatusPending
+
 	r.CreatedDate = now
 	r.LastUpdated = now
 

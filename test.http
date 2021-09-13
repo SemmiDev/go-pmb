@@ -8,9 +8,9 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "Rahmatul Izzah Annisa",
-  "email": "izzah@gmail.com",
-  "phone": "082387325810",
+  "name": "Sammi Aldhi Yanto",
+  "email": "sammidev@gmail.com",
+  "phone": "082387325971",
   "program": "S2"
 }
 
@@ -20,6 +20,18 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "3481950762",
-  "password": "34811910147621310512"
+  "username": "0697413528",
+  "password": "49121107110521413683"
+}
+
+###
+PUT http://localhost:3000/api/registrant/payment_status
+Accept: application/json
+Content-Type: application/json
+
+{
+  "registrant_id": "f86b47c1-5c84-4af3-936b-8579a5b4889b",
+  "payment_status": "capture",
+  "payment_type": "credit_card",
+  "fraud_status": "accept"
 }

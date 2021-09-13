@@ -1,7 +1,7 @@
 package token
 
 import (
-	"github.com/SemmiDev/go-pmb/src/common/helper"
+	"github.com/SemmiDev/go-pmb/pkg/common/helper"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"

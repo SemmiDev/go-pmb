@@ -1,4 +1,4 @@
-package models
+package registrant
 
 // RegisterResponse for register response payload.
 type RegisterResponse struct {
@@ -12,6 +12,6 @@ type RegisterResponse struct {
 
 // LoginResponse for login response payload.
 type LoginResponse struct {
-	AccessToken string     `json:"access_token"`
-	Registrant  ReadResult `json:"registrant"`
+	AccessToken string      `json:"access_token"`
+	Registrant  *ReadResult `json:"registrant"`
 }
