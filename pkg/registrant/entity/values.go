@@ -1,4 +1,4 @@
-package registrant
+package entity
 
 type (
 	Program       string

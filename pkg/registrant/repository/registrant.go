@@ -1,23 +1,26 @@
-package registrant
+package repository
 
 import (
 	"database/sql"
 	"errors"
-	sqlTrx "github.com/SemmiDev/go-pmb/pkg/stores/sql"
+	"github.com/SemmiDev/go-pmb/pkg/common/database"
+	"github.com/SemmiDev/go-pmb/pkg/registrant/entity"
+	"github.com/SemmiDev/go-pmb/pkg/registrant/storage"
+	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Repository struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewMySqlRepository(db *sql.DB) *Repository {
+func NewMySqlRepository(db *sqlx.DB) *Repository {
 	return &Repository{db: db}
 }
 
-func (s Repository) Save(r *Registrant) error {
-	err := sqlTrx.WithTransaction(s.db, func(trx sqlTrx.Transaction) error {
-		_, err := trx.Exec(`INSERT INTO registrants
+func (s Repository) Save(r *entity.Registrant) error {
+	if err := database.TXHandler(s.db, func(tx *sqlx.Tx) error {
+		_, err := tx.Exec(`INSERT INTO registrants
 		(registrant_id,name,email,phone,username,password,code,payment_url,program,bill,payment_status,created_date,last_updated)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			r.ID,
@@ -37,20 +40,21 @@ func (s Repository) Save(r *Registrant) error {
 		if err != nil {
 			return err
 		}
+		if err := tx.Commit(); err != nil {
+			return err
+		}
 
 		return nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s Repository) FindByID(id string) (queryResult QueryResult) {
-	rowsData := ReadResult{}
-	err := s.db.QueryRow(`SELECT * FROM registrants WHERE registrant_id = ?`, id).Scan(
+func (s Repository) FindByID(id string) (queryResult storage.QueryResult) {
+	rowsData := storage.ReadResult{}
+	err := s.db.QueryRowx(`SELECT * FROM registrants WHERE registrant_id = ?`, id).Scan(
 		&rowsData.ID,
 		&rowsData.Name,
 		&rowsData.Email,
@@ -77,9 +81,9 @@ func (s Repository) FindByID(id string) (queryResult QueryResult) {
 	return
 }
 
-func (s Repository) FindByUsername(u string) (queryResult QueryResult) {
-	rowsData := ReadResult{}
-	err := s.db.QueryRow(`SELECT * FROM registrants WHERE username = ?`, u).Scan(
+func (s Repository) FindByUsername(u string) (queryResult storage.QueryResult) {
+	rowsData := storage.ReadResult{}
+	err := s.db.QueryRowx(`SELECT * FROM registrants WHERE username = ?`, u).Scan(
 		&rowsData.ID,
 		&rowsData.Name,
 		&rowsData.Email,
@@ -106,9 +110,9 @@ func (s Repository) FindByUsername(u string) (queryResult QueryResult) {
 	return
 }
 
-func (s Repository) FindByUsernameAndPassword(u, p string) (queryResult QueryResult) {
-	rowsData := ReadResult{}
-	err := s.db.QueryRow(`SELECT * FROM registrants WHERE username = ?`, u).Scan(
+func (s Repository) FindByUsernameAndPassword(u, p string) (queryResult storage.QueryResult) {
+	rowsData := storage.ReadResult{}
+	err := s.db.QueryRowx(`SELECT * FROM registrants WHERE username = ?`, u).Scan(
 		&rowsData.ID,
 		&rowsData.Name,
 		&rowsData.Email,
@@ -139,17 +143,18 @@ func (s Repository) FindByUsernameAndPassword(u, p string) (queryResult QueryRes
 	return
 }
 
-func (s Repository) UpdatePaymentStatus(id string, paymentStatus PaymentStatus) error {
-	err := sqlTrx.WithTransaction(s.db, func(trx sqlTrx.Transaction) error {
-		_, err := trx.Exec(`UPDATE registrants SET payment_status = ? WHERE registrant_id = ?`, paymentStatus, id)
+func (s Repository) UpdatePaymentStatus(id string, paymentStatus entity.PaymentStatus) error {
+	if err := database.TXHandler(s.db, func(tx *sqlx.Tx) error {
+		_, err := tx.Exec(`UPDATE registrants SET payment_status = ? WHERE registrant_id = ?`, paymentStatus, id)
 		if err != nil {
+			return err
+		}
+		if err := tx.Commit(); err != nil {
 			return err
 		}
 
 		return nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 

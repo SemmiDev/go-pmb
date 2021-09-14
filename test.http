@@ -9,8 +9,8 @@ Content-Type: application/json
 
 {
   "name": "Sammi Aldhi Yanto",
-  "email": "sammidev@gmail.com",
-  "phone": "082387325971",
+  "email": "sammidev2@gmail.com",
+  "phone": "0823873259712",
   "program": "S2"
 }
 
@@ -20,8 +20,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "0697413528",
-  "password": "49121107110521413683"
+  "username": "6395017842",
+  "password": "11121051417813296340"
 }
 
 ###
@@ -30,7 +30,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "registrant_id": "f86b47c1-5c84-4af3-936b-8579a5b4889b",
+  "registrant_id": "a9ae0d2c-4a1f-4cb0-9494-65991039cf27",
   "payment_status": "capture",
   "payment_type": "credit_card",
   "fraud_status": "accept"

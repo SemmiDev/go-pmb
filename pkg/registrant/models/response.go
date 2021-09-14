@@ -1,4 +1,8 @@
-package registrant
+package models
+
+import (
+	"github.com/SemmiDev/go-pmb/pkg/registrant/storage"
+)
 
 // RegisterResponse for register response payload.
 type RegisterResponse struct {
@@ -12,6 +16,6 @@ type RegisterResponse struct {
 
 // LoginResponse for login response payload.
 type LoginResponse struct {
-	AccessToken string      `json:"access_token"`
-	Registrant  *ReadResult `json:"registrant"`
+	AccessToken string              `json:"access_token"`
+	Registrant  *storage.ReadResult `json:"registrant"`
 }

@@ -1,7 +1,8 @@
-package registrant
+package models
 
 import (
 	"errors"
+	"github.com/SemmiDev/go-pmb/pkg/registrant/entity"
 	"net"
 	"net/mail"
 	"regexp"
@@ -10,10 +11,10 @@ import (
 
 // RegisterReq for Register request payload.
 type RegisterReq struct {
-	Name    string  `json:"name"`
-	Email   string  `json:"email"`
-	Phone   string  `json:"phone"`
-	Program Program `json:"program"`
+	Name    string         `json:"name"`
+	Email   string         `json:"email"`
+	Phone   string         `json:"phone"`
+	Program entity.Program `json:"program"`
 }
 
 // phoneRegex for rules of phone number.

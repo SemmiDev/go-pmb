@@ -1,6 +1,9 @@
-package registrant
+package storage
 
-import "time"
+import (
+	"github.com/SemmiDev/go-pmb/pkg/registrant/entity"
+	"time"
+)
 
 type ReadResult struct {
 	ID string
@@ -13,9 +16,9 @@ type ReadResult struct {
 	Code       string
 	PaymentURL string
 
-	Program       Program
-	Bill          Bill
-	PaymentStatus PaymentStatus
+	Program       entity.Program
+	Bill          entity.Bill
+	PaymentStatus entity.PaymentStatus
 
 	CreatedDate time.Time
 	LastUpdated time.Time

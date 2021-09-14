@@ -1,4 +1,4 @@
-package registrant
+package entity
 
 import (
 	"github.com/SemmiDev/go-pmb/pkg/common/helper"

@@ -1,22 +1,25 @@
-package registrant
+package controller
 
 import (
 	"fmt"
 	"github.com/SemmiDev/go-pmb/pkg/common/config"
 	"github.com/SemmiDev/go-pmb/pkg/common/token"
 	"github.com/SemmiDev/go-pmb/pkg/common/web"
+	"github.com/SemmiDev/go-pmb/pkg/registrant/entity"
+	"github.com/SemmiDev/go-pmb/pkg/registrant/models"
+	"github.com/SemmiDev/go-pmb/pkg/registrant/service"
 	"github.com/gofiber/fiber/v2"
 	"log"
 	"net/http"
 )
 
-type Server struct {
-	service Service
+type Controller struct {
+	service service.Service
 	token   token.Maker
 	router  fiber.Router
 }
 
-func (s *Server) Mount(router fiber.Router) {
+func (s *Controller) Mount(router fiber.Router) {
 	router.Post("/registrant/register", s.RegisterHandler)
 	router.Post("/registrant/login", s.LoginHandler)
 	router.Put("/registrant/payment_status", s.UpdatePaymentStatusHandler)
@@ -24,20 +27,21 @@ func (s *Server) Mount(router fiber.Router) {
 	s.router = router
 }
 
-func NewServer(service *Service) *Server {
+func NewController(service *service.Service) *Controller {
+	// using paseto for token maker.
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		log.Fatalln(fmt.Errorf("cannot create token maker: %w", err))
 	}
 
-	return &Server{
+	return &Controller{
 		service: *service,
 		token:   tokenMaker,
 	}
 }
 
-func (s *Server) RegisterHandler(c *fiber.Ctx) error {
-	request := new(RegisterReq)
+func (s *Controller) RegisterHandler(c *fiber.Ctx) error {
+	request := new(models.RegisterReq)
 	if err := c.BodyParser(request); err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(web.UnprocessableEntityResponse(err))
 	}
@@ -55,8 +59,8 @@ func (s *Server) RegisterHandler(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(web.CreatedResponse(result))
 }
 
-func (s *Server) UpdatePaymentStatusHandler(c *fiber.Ctx) error {
-	request := new(UpdatePaymentStatusReq)
+func (s *Controller) UpdatePaymentStatusHandler(c *fiber.Ctx) error {
+	request := new(models.UpdatePaymentStatusReq)
 	if err := c.BodyParser(request); err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(web.UnprocessableEntityResponse(err.Error()))
 	}
@@ -64,15 +68,6 @@ func (s *Server) UpdatePaymentStatusHandler(c *fiber.Ctx) error {
 	err := request.Validate()
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(web.BadRequestResponse(err.Error()))
-	}
-
-	req := s.service.repo.FindByID(request.RegisterID)
-	if req.Error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(web.ResponseInternalServerError(err.Error()))
-	}
-
-	if req.ReadResult.Email == "" {
-		return c.Status(http.StatusNotFound).JSON(web.NotFoundResponse(err.Error()))
 	}
 
 	err = s.service.UpdatePaymentStatus(request)
@@ -83,8 +78,8 @@ func (s *Server) UpdatePaymentStatusHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(web.OkResponse(nil))
 }
 
-func (s *Server) LoginHandler(c *fiber.Ctx) error {
-	request := new(LoginReq)
+func (s *Controller) LoginHandler(c *fiber.Ctx) error {
+	request := new(models.LoginReq)
 	if err := c.BodyParser(request); err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(web.UnprocessableEntityResponse(err.Error()))
 	}
@@ -94,7 +89,7 @@ func (s *Server) LoginHandler(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(web.BadRequestResponse(err.Error()))
 	}
 
-	req := s.service.repo.FindByUsernameAndPassword(request.Username, request.Password)
+	req := s.service.Repo.FindByUsernameAndPassword(request.Username, request.Password)
 	if req.Error != nil {
 		return c.Status(http.StatusInternalServerError).JSON(web.ResponseInternalServerError(err.Error()))
 	}
@@ -103,7 +98,7 @@ func (s *Server) LoginHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(web.NotFoundResponse("registrant not found"))
 	}
 
-	if req.ReadResult.PaymentStatus != PaymentStatusPaid {
+	if req.ReadResult.PaymentStatus != entity.PaymentStatusPaid {
 		return c.Status(fiber.StatusNotFound).JSON(web.NotFoundResponse("please pay the bill first"))
 	}
 
@@ -115,7 +110,7 @@ func (s *Server) LoginHandler(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(web.NotFoundResponse(err.Error()))
 	}
 
-	rsp := LoginResponse{
+	rsp := models.LoginResponse{
 		AccessToken: accessToken,
 		Registrant:  req.ReadResult,
 	}
